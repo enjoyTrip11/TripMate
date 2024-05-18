@@ -6,7 +6,8 @@
           <!-- <div class="text-h2">{{ slide.title }}</div> -->
           <!-- <WeatherSlide/> -->
           <!-- <SearchSlide/> -->
-          <PlaceSlide/>
+          <!-- <PlaceSlide/> -->
+          <PlanSlide />
         </div> 
       </v-sheet> 
     </v-carousel-item>
@@ -17,6 +18,7 @@
 import WeatherSlide from '@/components/slide/WeatherSlide.vue';
 import SearchSlide from '../components/slide/SearchSlide.vue';
 import PlaceSlide from '../components/slide/PlaceSlide.vue';
+import PlanSlide from '../components/slide/PlanSlide.vue';
 
 export default {
   data() {
@@ -37,6 +39,7 @@ export default {
     WeatherSlide,
     SearchSlide,
     PlaceSlide,
+    PlanSlide,
   },
 };
 </script>
