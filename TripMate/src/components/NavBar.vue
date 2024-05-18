@@ -7,7 +7,7 @@
             <img src="@/assets/img/logo.gif" class="icon" />
           </v-icon>
           <a @click.stop="toggleDrawer('logoDrawer')" class="title-link">
-            <v-toolbar-title>TripMate</v-toolbar-title>
+            <v-toolbar-title class="logo-title">TripMate</v-toolbar-title>
           </a>
         </div>
 
@@ -77,14 +77,18 @@ export default {
 .icon {
   width: 40px;
   height: 40px;
-  margin-left: 30px;
+  margin-left: 40px;
+}
+
+.logo-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-left: 10px;
 }
 
 .profile-btn {
-  padding: 0;
-  min-width: 0;
   border-radius: 50%;
-  margin-right: 30px;
+  margin-right: 4%;
 }
 
 .title-link {
