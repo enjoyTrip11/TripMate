@@ -1,13 +1,9 @@
 <template>
     <v-card class="mx-auto custom-card" color="white" d-flex justify-center align-center>
-        <template v-slot:loader="{ isActive }">
-            <v-progress-linear :active="isActive" color="green-lighten-3" height="4" indeterminate></v-progress-linear>
-        </template>
-
         <v-img height="600" color="#E0F4FF" cover class="img-center">
             <v-row class="pa-3 align-center" justify="center">
-                <v-col cols="12">
-                    <v-menu location="bottom start" origin="overlap" transition="slide-y-transition">
+                <v-col cols="12" class="text-right">
+                    <v-menu location="bottom start" origin="top" transition="slide-y-transition">
                         <template v-slot:activator="{ props }">
                             <v-btn v-bind="props" density="comfortable" icon="mdi-dots-vertical"
                                 variant="tonal"></v-btn>
@@ -22,7 +18,8 @@
                 <v-row justify="center">
                     <v-col class="text-center">
                         <h3 class="text-h2">{{ title }}</h3>
-                        <span class="text-grey-lighten-1">{{ place }}</span>
+                        <br><br>
+                        <span class="text-grey" style="font-size: 22px;">{{ place }}</span>
                     </v-col>
                 </v-row>
             </v-row>
@@ -40,7 +37,8 @@
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <v-text-field v-model="time" color="blue-grey-lighten-2" label="날짜" class="input-field"></v-text-field>
+                        <!--v-text-field v-model="time" color="blue-grey-lighten-2" label="날짜" class="input-field"></v-text-field-->
+                        
                     </v-col>
 
                     <v-col cols="12">
@@ -115,5 +113,13 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+.text-center {
+  position: absolute;
+  bottom: 200px; /* 원하는 위치로 조정 가능 */
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: 100%;
 }
 </style>
