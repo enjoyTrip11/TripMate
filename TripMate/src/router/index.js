@@ -1,5 +1,5 @@
+import PlanMainPage from '@/views/Plan/PlanMainPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,6 +8,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       // component: HomeView
+    },
+    {
+      path: '/plan',
+      name: 'plan',
+      component: PlanMainPage
     },
     {
       path: '/about',
