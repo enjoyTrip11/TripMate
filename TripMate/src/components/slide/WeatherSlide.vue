@@ -6,8 +6,9 @@
           <h1 class="main-title">{{ descriptionLine1 }}</h1>
           <h1 class="main-title">{{ descriptionLine2 }}</h1>
           <div class="mt-4"></div> 
-          <small>{{ location }}</small>
+          
           <div>
+            <small>{{ location }}</small>
             <h2>{{ time }} <span class="weather">{{ weather }}</span> 미세먼지 <span class="air-condition">{{ airQuality }}</span> </h2>
           </div>
           <div class="mt-10"></div> 
@@ -81,7 +82,7 @@
   <style scoped>
 
 .content {
-    margin: 50px;
+    margin: 40px;
 }
 
   .main-title {
