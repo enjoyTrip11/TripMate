@@ -1,17 +1,25 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-
-</script>
-
 <template>
-  <header>
-    <div class="wrapper">
-        <h1>Hiiii</h1>
-    </div>
-  </header>
-
-  <RouterView />
+  <v-app>
+    <v-btn color = "primary">Click Me</v-btn>
+  </v-app>
 </template>
 
-<style scoped>
+<script>
+export default {
+  name: 'App',
+  components: {
+
+  }
+}
+</script>
+
+<style>
+#app {
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
 </style>
