@@ -11,7 +11,7 @@
           <h2>{{ descriptionLine3 }}</h2>
         </div>
         <div class="mt-10"></div>
-        <v-btn color="primary">핫플레이스 보기</v-btn>
+        <v-btn color="primary">계획 더보기</v-btn>
       </v-col>
 
       <!-- 이미지 영역 -->
@@ -23,15 +23,15 @@
 </template>
 
 <script>
-import PlaceImage from '@/assets/img/main/place.png'
+import BoardImage from '@/assets/img/main/board.png'
 
 export default {
   data() {
     return {
-      defalutImg: PlaceImage,
-      descriptionLine1: '가고 싶은 장소를 ',
-      descriptionLine2: '모아뒀어요',
-      descriptionLine3: '다른 사용자들은 여기가 궁금해요!',
+      defalutImg: BoardImage,
+      descriptionLine1: '여행은',
+      descriptionLine2: '어떠셨나요?',
+      descriptionLine3: '여행에서의 일들을 들려주세요!',
 
     };
   },

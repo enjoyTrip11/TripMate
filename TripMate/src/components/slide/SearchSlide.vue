@@ -162,7 +162,7 @@ export default {
       // 자동 변경 시작
       this.intervalId = setInterval(() => {
         this.toggleRandomPlace();
-      }, 1500); 
+      }, 1000); 
     },
     stopAutoChange() {
       // 자동 변경 멈춤

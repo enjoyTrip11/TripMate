@@ -16,9 +16,9 @@
 
       <!-- 이미지 영역 -->
       <v-col cols="4" offset="1" class="image-column">
-        <v-img :src="defalutImg" @click="toggleRandomPlace" @mouseover="stopAutoChange" @mouseleave="startAutoChange"
-          class="page-image"></v-img>
+        <v-img :src="defalutImg" class="page-image"></v-img>
       </v-col>
+      
     </v-row>
   </v-container>
 </template>
