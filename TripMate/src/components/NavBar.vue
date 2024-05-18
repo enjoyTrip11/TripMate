@@ -1,15 +1,15 @@
 <template>
-  <v-app>
+  <div>
     <v-app-bar prominent color="light-blue-lighten-5" elevation="0">
         <!-- Logo -->
-        <v-container class="logo">
+        <div class="logo">
           <v-icon @click.stop="toggleDrawer('logoDrawer')">
             <img src="@/assets/img/logo.gif" class="icon" />
           </v-icon>
           <a @click.stop="toggleDrawer('logoDrawer')" class="title-link">
             <v-toolbar-title>TripMate</v-toolbar-title>
           </a>
-        </v-container>
+        </div>
 
         <!-- Spacer -->
         <v-spacer></v-spacer>
@@ -35,7 +35,7 @@
     <v-navigation-drawer v-model="logoDrawer" temporary>
       <v-list :items="logoItems"></v-list>
     </v-navigation-drawer>
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -77,16 +77,17 @@ export default {
 .icon {
   width: 40px;
   height: 40px;
+  margin-left: 30px;
 }
 
 .profile-btn {
   padding: 0;
   min-width: 0;
   border-radius: 50%;
-  margin-right: 20px;
+  margin-right: 30px;
 }
 
 .title-link {
-  margin-left: 10px;
+  margin-left: 25px;
 }
 </style>
