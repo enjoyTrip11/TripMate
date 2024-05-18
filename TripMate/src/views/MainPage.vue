@@ -5,7 +5,8 @@
         <div class="d-flex fill-height justify-center align-center">
           <!-- <div class="text-h2">{{ slide.title }}</div> -->
           <!-- <WeatherSlide/> -->
-          <SearchSlide/>
+          <!-- <SearchSlide/> -->
+          <PlaceSlide/>
         </div> 
       </v-sheet> 
     </v-carousel-item>
@@ -15,6 +16,7 @@
 <script>
 import WeatherSlide from '@/components/slide/WeatherSlide.vue';
 import SearchSlide from '../components/slide/SearchSlide.vue';
+import PlaceSlide from '../components/slide/PlaceSlide.vue';
 
 export default {
   data() {
@@ -34,6 +36,7 @@ export default {
   components: {
     WeatherSlide,
     SearchSlide,
+    PlaceSlide,
   },
 };
 </script>

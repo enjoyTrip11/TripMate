@@ -83,8 +83,8 @@ export default {
         },
         {
           location: '전라남도 여수시',
-          placeDescription: '여수 바다 위에서',
-          place: '달빛배타기',
+          placeDescription: '달빛 배타러',
+          place: '여수 밤바다',
         },
         {
           location: '충청남도 대전시',
@@ -93,8 +93,8 @@ export default {
         },
         {
           location: '강원도 속초시',
-          placeDescription: '겨울에는 산책하는',
-          place: '속초해변',
+          placeDescription: '겨울 산책에는',
+          place: '속초 해변',
         },
         {
           location: '서울특별시 마포구',
@@ -133,7 +133,7 @@ export default {
         },
         {
           location: '경상북도 포항시',
-          placeDescription: '여름 바다를 즐기기 좋은',
+          placeDescription: '여름 바다는',
           place: '포항 구룡포 해수욕장',
         },
       ],
