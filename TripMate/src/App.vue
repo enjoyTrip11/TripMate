@@ -2,11 +2,15 @@
   <v-app>
     <v-layout class="rounded rounded-md">
       <NavBar />
-      <MainPage />
+      <!--MainPage /-->
+      <v-main class="d-flex align-center justify-center">
+        <RouterView></RouterView>
+      </v-main>
     </v-layout>
   </v-app>
 </template>
 
+<script>
 import NavBar from '@/components/NavBar.vue';
 import MainPage from './views/MainPage.vue';
 

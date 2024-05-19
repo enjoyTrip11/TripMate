@@ -29,16 +29,24 @@
             <v-container>
                 <v-row dense>
                     <v-col cols="12">
-                        <v-text-field v-model="title" color="blue-grey-lighten-2" label="제목" class="input-field"></v-text-field>
+                        <v-text-field v-model="title" color="blue-grey-lighten-2" label="제목"
+                            class="input-field"></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <v-text-field v-model="place" color="blue-grey-lighten-2" label="여행지" class="input-field"></v-text-field>
+                        <v-text-field v-model="place" color="blue-grey-lighten-2" label="여행지"
+                            class="input-field"></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <!--v-text-field v-model="time" color="blue-grey-lighten-2" label="날짜" class="input-field"></v-text-field-->
-                        
+                        <v-menu v-model="datePicker" :close-on-content-click="false" transition="scale-transition"
+                            offset-y>
+                            <template v-slot:activator="{ on }">
+                                <!--v-text-field v-model="time" color="blue-grey-lighten-2" label="날짜" class="input-field"
+                                    readonly v-on="on"></v-text-field-->
+                                <date-picker-range @handleDateChange="handleDateChange" />
+                            </template>
+                        </v-menu>
                     </v-col>
 
                     <v-col cols="12">
@@ -55,14 +63,17 @@
                         </v-autocomplete>
                     </v-col>
                 </v-row>
+                <div class="d-flex justify-center">
+                    <v-btn depressed width="150px">여행하기</v-btn>
+                </div>
             </v-container>
         </v-form>
-
-        <v-divider></v-divider>
     </v-card>
+    <div class="custom-text">내 계획</div>
 </template>
 
 <script>
+import DatePickerRange from "@/components/DatePickerRange.vue";
 export default {
     data() {
         const srcs = {
@@ -89,8 +100,13 @@ export default {
             place: 'The summer breeze',
         }
     },
+    components: { DatePickerRange },
 
     methods: {
+        handleDateChange(value) {
+			// datepicker 이벤트 처리
+		},
+
         remove(item) {
             const index = this.friends.indexOf(item.name)
             if (index >= 0) this.friends.splice(index, 1)
@@ -102,24 +118,36 @@ export default {
 <style scoped>
 .custom-card {
     width: 1500px;
-    height: 900px;
+    height: 950px;
     margin-top: 20px;
     padding: 20px;
-    border: 1px solid #87C4FF; /* 테두리 색상 설정 */
-    background-color: white; /* 배경색 흰색으로 설정 */
+    border: 1px solid #87C4FF;
+    /* 테두리 색상 설정 */
+    background-color: white;
+    /* 배경색 흰색으로 설정 */
 }
+
 .img-center .v-img__content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
+
 .text-center {
-  position: absolute;
-  bottom: 200px; /* 원하는 위치로 조정 가능 */
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  width: 100%;
+    position: absolute;
+    bottom: 200px;
+    /* 원하는 위치로 조정 가능 */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100%;
+}
+
+.custom-text {
+    position: absolute;
+    bottom: 0px;
+    text-align: center;
+    width: 100%;
 }
 </style>
