@@ -1,3 +1,4 @@
+import Login from '@/views/Login/Login.vue'
 import PlanCreatePage from '@/views/Plan/PlanCreatePage.vue'
 import PlanListPage from '@/views/Plan/PlanListPage.vue'
 import PlanMainPage from '@/views/Plan/PlanMainPage.vue'
@@ -25,6 +26,11 @@ const router = createRouter({
       path: '/planlist',
       name: 'planlist',
       component: PlanListPage
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     },
     {
       path: '/about',
