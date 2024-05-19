@@ -11,9 +11,30 @@ const router = createRouter({
       component: MainPage
     },
     {
+      path: '/',
+      name: 'map',
+      component: MainPage
+    },
+    {
+      path: '/',
+      name: 'plan',
+      component: MainPage
+    },
+    {
+      path: '/',
+      name: 'hotplace',
+      component: MainPage
+    },
+    {
       path: '/board',
       name: 'board',
       component: import('@/views/board/BoardMainPage.vue')
+      // component: import('@/views/board/BoardDetail.vue')
+    },
+    {
+      path: '/board/id',
+      name: 'boardDetail',
+      component: import('@/views/board/BoardDetail.vue')
     },
   ]
 })

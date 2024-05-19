@@ -32,9 +32,15 @@
                 <v-list>
                     <v-list-item v-for="(post, index) in filteredPosts" :key="index" class="mb-6">
                         <v-list-item-content>
-                            <v-list-item-title class="font-weight-bold">{{ post.title }}</v-list-item-title>
+                            <router-link :to="{ name: 'boardDetail' }" style="text-decoration: none; color:black;">
+                                <v-list-item-title class="font-weight-bold">
+                                    {{ post.title }}
+                                </v-list-item-title>
+                            </router-link>
+                            <span class="text-caption" style="float: right;">{{ post.date }}</span>
                             <v-list-item-subtitle class="mb-2">{{ post.category }}</v-list-item-subtitle>
                             <v-list-item-subtitle>{{ post.content }}</v-list-item-subtitle>
+                            
                         </v-list-item-content>
                         <v-divider></v-divider>
                     </v-list-item>
@@ -44,7 +50,7 @@
 
         <!-- 검색 바와 작성 버튼 -->
         <v-row justify="center" class="fixed-bottom">
-            <v-col >
+            <v-col>
                 <v-text-field v-model="search" label="검색" dense outlined class="custom-search" solo-inverted append-icon="mdi-magnify" max-width="400"></v-text-field>
             </v-col>
             <v-col>
@@ -62,18 +68,18 @@ export default {
             selectedCategory: '공지사항', // 디폴트는 공지사항
             search: '',
             posts: [
-                { title: 'Post 1', category: '공지사항', content: 'Content of post 1' },
-                { title: 'Post 2', category: '공지사항', content: 'Content of post 2' },
-                { title: 'Post 3', category: '여행 계획 공유', content: 'Content of post 3' },
-                { title: 'Post 4', category: '여행 후기', content: 'Content of post 4' },
-                { title: 'Post 5', category: '여행 후기', content: 'Content of post 5' },
-                { title: 'Post 6', category: '공지사항', content: 'Content of post 6' },
+                { title: 'Post 1', category: '공지사항', content: 'Content of post 1', date: '2024-05-01' },
+                { title: 'Post 2', category: '공지사항', content: 'Content of post 2', date: '2024-05-02' },
+                { title: 'Post 3', category: '여행 계획 공유', content: 'Content of post 3', date: '2024-05-03' },
+                { title: 'Post 4', category: '여행 후기', content: 'Content of post 4', date: '2024-05-04' },
+                { title: 'Post 5', category: '여행 후기', content: 'Content of post 5', date: '2024-05-05' },
+                { title: 'Post 6', category: '공지사항', content: 'Content of post 6', date: '2024-05-06' },
             ]
         };
     },
     computed: {
         filteredPosts() {
-            if (!this.selectedCategory || this.selectedCategory=='전체보기') return this.posts;
+            if (!this.selectedCategory || this.selectedCategory == '전체보기') return this.posts;
             return this.posts.filter(post => post.category === this.selectedCategory);
         }
     },
@@ -104,14 +110,5 @@ export default {
     bottom: 0;
     left: 43%;
     width: 100%;
-}
-
-.custom-search input {
-    border-radius: 25px !important; /* 입력 필드의 모서리 둥글게 설정 */
-    border-bottom: none !important; /* 입력 필드의 밑줄 제거 */
-}
-
-.custom-search .v-text-field__slot .v-icon {
-    color: grey; /* 검색 아이콘 색상 변경 */
 }
 </style>
