@@ -54,7 +54,9 @@
                 <v-text-field v-model="search" label="검색" dense outlined class="custom-search" solo-inverted append-icon="mdi-magnify" max-width="400"></v-text-field>
             </v-col>
             <v-col>
+                <router-link :to="{name: 'boardCreate'}">
                 <v-btn color="primary">작성</v-btn>
+            </router-link>
             </v-col>
         </v-row>
     </v-container>

@@ -32,7 +32,12 @@ const router = createRouter({
       // component: import('@/views/board/BoardDetail.vue')
     },
     {
-      path: '/board/id',
+      path: '/board/createId',
+      name: 'boardCreate',
+      component: import('@/views/board/BoardCreate.vue')
+    },
+    {
+      path: '/board/detailId',
       name: 'boardDetail',
       component: import('@/views/board/BoardDetail.vue')
     },
