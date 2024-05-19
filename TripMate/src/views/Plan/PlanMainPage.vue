@@ -1,5 +1,5 @@
 <template>
-    <v-card class="mx-auto custom-card" color="white" d-flex justify-center align-center>
+    <!--v-card class="mx-auto custom-card" color="white" d-flex justify-center align-center>
         <v-img height="600" color="#E0F4FF" cover class="img-center">
             <v-row class="pa-3 align-center" justify="center">
                 <v-col cols="12" class="text-right">
@@ -42,8 +42,8 @@
                         <v-menu v-model="datePicker" :close-on-content-click="false" transition="scale-transition"
                             offset-y>
                             <template v-slot:activator="{ on }">
-                                <!--v-text-field v-model="time" color="blue-grey-lighten-2" label="날짜" class="input-field"
-                                    readonly v-on="on"></v-text-field-->
+                                <v-text-field v-model="time" color="blue-grey-lighten-2" label="날짜" class="input-field"
+                                    readonly v-on="on"></v-text-field>
                                 <date-picker-range @handleDateChange="handleDateChange" />
                             </template>
                         </v-menu>
@@ -68,8 +68,51 @@
                 </div>
             </v-container>
         </v-form>
-    </v-card>
-    <div class="custom-text">내 계획</div>
+    </v-card-->
+
+    <v-form class="card-form">
+        <v-divider></v-divider>
+        <h2 class="card-title">내 계획</h2>
+        <v-container class="pa-4 card-container-up">
+            <v-row justify="center">
+                <template v-for="(item, i) in items" :key="i">
+                    <v-col cols="12" md="4">
+                        <v-hover v-slot="{ isHovering, props }">
+                            <v-card :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 12 : 2" v-bind="props">
+                                <v-img :src="item.img" height="250px" cover>
+                                    <v-card-title
+                                        class="text-h6 font-weight-bold text-white d-flex flex-column card-detail-title">
+                                        <p class="mt-4">
+                                            {{ item.title }}
+                                        </p>
+                                        <br>
+                                        <div>
+                                            <p class="ma-0 text-body-1 font-weight-bold card-detail-content">
+                                                {{ item.place }}
+                                            </p>
+                                            <p class="text-caption font-weight-medium card-detail-content">
+                                                {{ item.date }}
+                                            </p>
+                                            <p class="text-caption font-weight-medium card-detail-content">
+                                                <span v-for="(friend, index) in item.friend" :key="index">
+                                                    {{ friend }}<span v-if="index < item.friend.length - 1">, </span>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </v-card-title>
+                                    <div class="align-self-center card-detail-button">
+                                        <v-btn v-for="(icon, index) in icons" :key="index"
+                                            :class="{ 'show-btns': isHovering }" :color="transparent" :icon="icon"
+                                            variant="text"></v-btn>
+                                    </div>
+                                </v-img>
+                            </v-card>
+                        </v-hover>
+                    </v-col>
+                </template>
+            </v-row>
+        </v-container>
+    </v-form>
 </template>
 
 <script>
@@ -98,14 +141,61 @@ export default {
                 { name: 'Sandra Williams', group: 'Group 2', avatar: srcs[3] },
             ],
             place: 'The summer breeze',
+            icons: ['mdi-play'],
+            items: [
+                {
+                    title: '제목~~',
+                    place: '지역',
+                    date: '2024-05-19 ~ 2024-05-20',
+                    friend: ['친구 1', '친구 2', '친구 3'],
+                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg',
+                },
+                {
+                    title: 'Rock',
+                    place: 'Greatest Rock Hits',
+                    date: 'Lose yourself in rock tunes.',
+                    friend: ['Lose yourself in rock tunes.'],
+                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/singer.jpg',
+                },
+                {
+                    title: 'Mellow Moods',
+                    place: 'Ambient Bass',
+                    date: 'Chill beats to mellow you out.',
+                    friend: ['Chill beats to mellow you out.'],
+                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg',
+                },
+                {
+                    title: '제목',
+                    place: '지역',
+                    date: '2024-05-19 ~ 2024-05-20',
+                    friend: ['친구1', '친구2'],
+                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg',
+                },
+                {
+                    title: 'Rock',
+                    place: 'Greatest Rock Hits',
+                    date: 'Lose yourself in rock tunes.',
+                    friend: ['Lose yourself in rock tunes.'],
+                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/singer.jpg',
+                },
+                {
+                    title: 'Mellow Moods',
+                    place: 'Ambient Bass',
+                    date: 'Chill beats to mellow you out.',
+                    friend: ['Chill beats to mellow you out.'],
+                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg',
+                },
+            ],
+            transparent: 'rgba(255, 255, 255, 0)',
         }
     },
+
     components: { DatePickerRange },
 
     methods: {
         handleDateChange(value) {
-			// datepicker 이벤트 처리
-		},
+            // datepicker 이벤트 처리
+        },
 
         remove(item) {
             const index = this.friends.indexOf(item.name)
@@ -144,10 +234,50 @@ export default {
     width: 100%;
 }
 
-.custom-text {
+.card-form {
     position: absolute;
-    bottom: 0px;
-    text-align: center;
+    top: 100px;
     width: 100%;
+}
+
+.card-title {
+    position: absolute;
+    top: 15px;
+    /*bottom: 0px;*/
+    width: 100%;
+    text-align: center;
+}
+
+.card-detail-title {
+    position: absolute;
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.card-detail-content {
+    margin-top: 3px;
+}
+
+.card-detail-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 190px;
+}
+
+.card-container-up {
+    margin-top: 60px;
+}
+
+.v-card {
+    transition: opacity .4s ease-in-out;
+}
+
+.v-card:not(.on-hover) {
+    opacity: 0.6;
+}
+
+.show-btns {
+    color: rgba(255, 255, 255, 1) !important;
 }
 </style>

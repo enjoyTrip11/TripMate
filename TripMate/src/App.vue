@@ -3,7 +3,7 @@
     <v-layout class="rounded rounded-md">
       <NavBar />
       <!--MainPage /-->
-      <v-main class="d-flex align-center justify-center">
+      <v-main class="d-flex">
         <RouterView></RouterView>
       </v-main>
     </v-layout>
