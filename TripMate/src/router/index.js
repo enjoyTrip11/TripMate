@@ -10,6 +10,11 @@ const router = createRouter({
       name: 'home',
       component: MainPage
     },
+    {
+      path: '/board',
+      name: 'board',
+      component: import('@/views/board/BoardMainPage.vue')
+    },
   ]
 })
 

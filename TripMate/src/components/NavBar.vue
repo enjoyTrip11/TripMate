@@ -6,9 +6,9 @@
           <v-icon @click.stop="toggleDrawer('logoDrawer')">
             <img src="@/assets/img/logo.gif" class="icon" />
           </v-icon>
-          <a @click.stop="toggleDrawer('logoDrawer')" class="title-link">
+          <router-link :to="{name:'home'}" class="title-link">
             <v-toolbar-title class="logo-title">TripMate</v-toolbar-title>
-          </a>
+          </router-link>
         </div>
 
         <!-- Spacer -->
@@ -83,7 +83,10 @@ export default {
 .logo-title {
   font-size: 24px;
   font-weight: bold;
-  margin-left: 10px;
+  margin-left: 30px;
+  color: black; 
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 .profile-btn {
@@ -92,6 +95,6 @@ export default {
 }
 
 .title-link {
-  margin-left: 25px;
+  text-decoration: none;
 }
 </style>
