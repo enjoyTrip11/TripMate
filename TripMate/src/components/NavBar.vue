@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar prominent color="light-blue-lighten-5" elevation="0">
+    <v-app-bar prominent elevation="0">
         <!-- Logo -->
         <div class="logo">
           <v-icon @click.stop="toggleDrawer('logoDrawer')">
