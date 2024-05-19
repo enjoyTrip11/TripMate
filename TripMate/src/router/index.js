@@ -1,3 +1,5 @@
+import PlanCreatePage from '@/views/Plan/PlanCreatePage.vue'
+import PlanListPage from '@/views/Plan/PlanListPage.vue'
 import PlanMainPage from '@/views/Plan/PlanMainPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -13,6 +15,16 @@ const router = createRouter({
       path: '/plan',
       name: 'plan',
       component: PlanMainPage
+    },
+    {
+      path: '/plancreate',
+      name: 'plancreate',
+      component: PlanCreatePage
+    },
+    {
+      path: '/planlist',
+      name: 'planlist',
+      component: PlanListPage
     },
     {
       path: '/about',
