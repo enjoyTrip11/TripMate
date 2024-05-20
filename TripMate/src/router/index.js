@@ -41,6 +41,31 @@ const router = createRouter({
       name: 'boardDetail',
       component: import('@/views/board/BoardDetail.vue')
     },
+    {
+      path: '/weather',
+      name: 'weather',
+      component: import('@/views/weather/WeatherMainPage.vue')
+    },
+    {
+      path: '/',
+      name: 'login',
+      component: MainPage
+    },
+    {
+      path: '/',
+      name: 'logout',
+      component: MainPage
+    },
+    {
+      path: '/',
+      name: 'join',
+      component: MainPage
+    },
+    {
+      path: '/',
+      name: 'profile',
+      component: MainPage
+    },
   ]
 })
 

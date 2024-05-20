@@ -25,7 +25,6 @@
         <v-list>
           <v-list-item v-for="(item, i) in userItems" :key="i">
             <v-list-item-title>
-              <!-- 수정된 부분 -->
               <router-link :to="{ name: item.value }" class="custom-router-link">{{ item.title }}</router-link>
             </v-list-item-title>
           </v-list-item>
@@ -105,6 +104,7 @@ export default {
 .title-link {
   text-decoration: none;
 }
+
 
 .custom-router-link {
   color: black; /* 글자 색상 검정색 */
