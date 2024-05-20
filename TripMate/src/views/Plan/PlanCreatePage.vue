@@ -25,10 +25,6 @@
                     <KakaoMapMarkerPolyline :markerList="markerList" :showMarkerOrder="true" strokeColor="#C74C5E"
                         :strokeOpacity="1" strokeStyle="shortdot" />
                 </KakaoMap>
-                <div>
-                    <v-btn class="demo-button" @click="addMarker">마커 추가하기</v-btn>
-                    <v-btn class="demo-button" @click="deleteMarker">마커 삭제하기</v-btn>
-                </div>
             </v-col>
 
             <!-- 선택된 장소 목록 -->
@@ -36,7 +32,8 @@
                 <div>
                     <draggable v-model="selectedPlace" class="dragArea">
                         <template #item="{ element: place }">
-                            <v-card class="custom-card">
+                            <v-card class="custom-card" @mouseover="showDeleteButton(place)"
+                                @mouseleave="hideDeleteButton(place)">
                                 <v-card-title>Selected Place</v-card-title>
                                 <v-card-text>
                                     <div>
@@ -44,6 +41,10 @@
                                         <span>{{ place.title }}</span>
                                     </div>
                                     <div>{{ place.description }}</div>
+                                    <v-btn icon class="delete-button" @click="deletePlace(place)"
+                                        v-show="place.showDelete">
+                                        <v-icon>mdi-delete</v-icon>
+                                    </v-btn>
                                 </v-card-text>
                             </v-card>
                         </template>
@@ -128,6 +129,23 @@ const searchQuery = ref('');
 const filteredPlaces = ref(placeList);
 const selectedPlace = ref([]);
 
+const showDeleteButton = (place) => {
+    place.showDelete = true;
+};
+
+const hideDeleteButton = (place) => {
+    place.showDelete = false;
+};
+
+const deletePlace = (place) => {
+    const index = selectedPlace.value.indexOf(place);
+    if (index !== -1) {
+        selectedPlace.value.splice(index, 1);
+        markerList.value.splice(index, 1);
+        updateMarkerList();
+    }
+};
+
 const filterPlaces = () => {
     filteredPlaces.value = placeList.filter(place =>
         place.title.toLowerCase().includes(searchQuery.value.toLowerCase())
@@ -151,23 +169,6 @@ const selectPlace = (place) => {
 
 const markerList: Ref<KakaoMapMarkerListItem[]> = ref([]);
 
-// 마커 추가하기 버튼의 함수입니다
-const addMarker = (): void => {
-    const order = markerList.value.length + 1;
-    markerList.value.push({
-        lat: 33.4509 + Math.random() * 0.003,
-        lng: 126.571 + Math.random() * 0.003,
-        image,
-        orderBottomMargin: '37px',
-        order
-    });
-};
-
-// 마커 삭제하기 버튼의 함수입니다
-const deleteMarker = (): void => {
-    markerList.value.pop();
-};
-
 watch(selectedPlace, updateMarkerList);
 
 </script>
@@ -186,5 +187,17 @@ watch(selectedPlace, updateMarkerList);
 
 .custom-card {
     margin-bottom: 10px;
+}
+
+.delete-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.custom-card:hover .delete-button {
+    opacity: 1;
 }
 </style>
