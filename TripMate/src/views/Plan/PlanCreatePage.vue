@@ -33,21 +33,20 @@
 
             <!-- 선택된 장소 목록 -->
             <v-col class="d-flex flex-column ga-5">
-                <template v-for="(place, index) in selectedPlace" :key="index">
-                    <div>
-                        <v-card>
-                            <v-card-title>Selected Place</v-card-title>
-                            <v-card-text>
-                                <div>
-                                    <v-img :src="place.image" width="50" height="50"></v-img>
-                                    <span>{{ place.title }}</span>
-                                </div>
-                                <div>{{ place.description }}</div>
-                            </v-card-text>
-                        </v-card>
-                    </div>
-                </template>
-            </v-col>
+                <div>
+    <draggable v-model="selectedPlace" class="dragArea">
+      <template #item="{ element: place }">
+        <div class="placeItem">
+          <div>
+            <img :src="place.image" width="50" height="50" />
+            <span>{{ place.title }}</span>
+          </div>
+          <div>{{ place.description }}</div>
+        </div>
+      </template>
+    </draggable>
+  </div>
+</v-col>
         </v-row>
     </v-container>
 </template>
@@ -55,6 +54,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { KakaoMap, KakaoMapMarkerPolyline, type KakaoMapMarkerListItem } from 'vue3-kakao-maps';
+import draggable from 'vuedraggable';
 
 const image = {
     imageSrc: 'https://vue3-kakao-maps.netlify.app/images/redMarker.png',
@@ -144,7 +144,7 @@ const selectPlace = (place) => {
     };
     markerList.value.push(newMarker);
     selectedPlace.value.push(place);
-    console.log(selectPlace.length);
+    console.log(selectedPlace.value.length);
 };
 
 const markerList: Ref<KakaoMapMarkerListItem[]> = ref([
@@ -165,4 +165,17 @@ const addMarker = (): void => {
 const deleteMarker = (): void => {
     markerList.value.pop();
 };
+
 </script>
+
+<style>
+.dragArea {
+  list-style-type: none;
+  padding: 0;
+}
+.placeItem {
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  padding: 10px;
+}
+</style>
