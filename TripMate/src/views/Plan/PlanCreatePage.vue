@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { KakaoMap, KakaoMapMarkerPolyline, type KakaoMapMarkerListItem } from 'vue3-kakao-maps';
 import draggable from 'vuedraggable';
 
@@ -134,33 +134,32 @@ const filterPlaces = () => {
     );
 };
 
-// const selectPlace = (place) => {
-//   selectedPlace.value = place;
-// };
-
-const selectPlace = (place) => {
-    const newMarker = {
+const updateMarkerList = () => {
+    markerList.value = selectedPlace.value.map((place, index) => ({
         lat: place.lat,
         lng: place.lng,
         image,
-        orderBottomMargin: '37px'
-    };
-    markerList.value.push(newMarker);
-    selectedPlace.value.push(place);
-    console.log(selectedPlace.value.length);
+        orderBottomMargin: '37px',
+        order: index === 0 ? '출발' : index
+    }));
 };
 
-const markerList: Ref<KakaoMapMarkerListItem[]> = ref([
-    { lat: 33.4509, lng: 126.571, image, orderBottomMargin: '37px', order: '출발' }
-]);
+const selectPlace = (place) => {
+    selectedPlace.value.push(place);
+    updateMarkerList();
+};
+
+const markerList: Ref<KakaoMapMarkerListItem[]> = ref([]);
 
 // 마커 추가하기 버튼의 함수입니다
 const addMarker = (): void => {
+    const order = markerList.value.length + 1;
     markerList.value.push({
         lat: 33.4509 + Math.random() * 0.003,
         lng: 126.571 + Math.random() * 0.003,
         image,
-        orderBottomMargin: '37px'
+        orderBottomMargin: '37px',
+        order
     });
 };
 
@@ -168,6 +167,8 @@ const addMarker = (): void => {
 const deleteMarker = (): void => {
     markerList.value.pop();
 };
+
+watch(selectedPlace, updateMarkerList);
 
 </script>
 
