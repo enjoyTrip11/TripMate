@@ -5,6 +5,9 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
+import { useKakao } from 'vue3-kakao-maps/@utils';
+
+useKakao('e1ee6762eaaad76eea314182d19abc5d');
 
 const app = createApp(App)
 
