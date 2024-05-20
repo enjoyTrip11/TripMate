@@ -1,6 +1,5 @@
 <template>
     <v-container fluid>
-        <div class="mb-10"></div>
         <!-- 게시판 제목 -->
         <v-row justify="center" class="mb-4">
             <v-col cols="auto">

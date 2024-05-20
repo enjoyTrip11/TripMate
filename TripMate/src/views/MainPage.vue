@@ -1,5 +1,5 @@
 <template>
-    <v-carousel height="100vh" :show-arrows="false" cycle hide-delimiter-background>
+    <v-carousel height="85vh" :show-arrows="false" cycle hide-delimiter-background>
         <v-carousel-item v-for="(slide, i) in mainPageContents" :key="i">
             <v-sheet color="white" height="100%">
                 <div class="d-flex fill-height justify-center align-center">

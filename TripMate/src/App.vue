@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <v-layout class="rounded rounded-md">
-      <NavBar />
-      <router-view />
-    </v-layout>
+    <NavBar />
+    <v-main>
+        <router-view />
+    </v-main>
   </v-app>
 </template>
 

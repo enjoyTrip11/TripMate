@@ -1,18 +1,11 @@
 <template lang="">
-    <v-sheet>
-        <h3> 날씨 페이지 </h3>
-        <h3> 날씨 페이지 </h3>
-        <h3> 날씨 페이지 </h3>
-        <h3> 날씨 페이지 </h3>
-        <h3> 날씨 페이지 </h3>
-        <h3> 날씨 페이지 </h3>
-        <h3> 날씨 페이지 </h3>
-    </v-sheet>
+    <v-container>
+       <WeatherMap />
+    </v-container>
 </template>
-<script>
-export default {
-    
-}
+<script setup>
+
+import WeatherMap from '@/components/weather/WeatherMap.vue'
 </script>
 <style lang="">
     
