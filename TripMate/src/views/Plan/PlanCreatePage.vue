@@ -34,19 +34,22 @@
             <!-- 선택된 장소 목록 -->
             <v-col class="d-flex flex-column ga-5">
                 <div>
-    <draggable v-model="selectedPlace" class="dragArea">
-      <template #item="{ element: place }">
-        <div class="placeItem">
-          <div>
-            <img :src="place.image" width="50" height="50" />
-            <span>{{ place.title }}</span>
-          </div>
-          <div>{{ place.description }}</div>
-        </div>
-      </template>
-    </draggable>
-  </div>
-</v-col>
+                    <draggable v-model="selectedPlace" class="dragArea">
+                        <template #item="{ element: place }">
+                            <v-card class="custom-card">
+                                <v-card-title>Selected Place</v-card-title>
+                                <v-card-text>
+                                    <div>
+                                        <v-img :src="place.image" width="50" height="50"></v-img>
+                                        <span>{{ place.title }}</span>
+                                    </div>
+                                    <div>{{ place.description }}</div>
+                                </v-card-text>
+                            </v-card>
+                        </template>
+                    </draggable>
+                </div>
+            </v-col>
         </v-row>
     </v-container>
 </template>
@@ -170,12 +173,17 @@ const deleteMarker = (): void => {
 
 <style>
 .dragArea {
-  list-style-type: none;
-  padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
+
 .placeItem {
-  border: 1px solid #ccc;
-  margin-bottom: 5px;
-  padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    padding: 10px;
+}
+
+.custom-card {
+    margin-bottom: 10px;
 }
 </style>
