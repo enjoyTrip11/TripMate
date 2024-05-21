@@ -13,6 +13,9 @@
           </div>
           <div class="mt-10"></div> 
           <v-btn color="primary" @click="goToWeatherPage">날씨 정보 더보기</v-btn>
+          <!-- <div class="btn">
+              <h3>날씨 정보 더보기🌦️ </h3>
+          </div> -->
         </v-col>
   
         <!-- 이미지 영역 -->
@@ -93,7 +96,7 @@
   }
   .weather-image {
     width: 100%;
-    max-height: 80vh; /* 이미지의 최대 높이 설정 */
+    max-height: 500vh; /* 이미지의 최대 높이 설정 */
     margin: auto; /* 가운데 정렬 */
   }
   .weather {
