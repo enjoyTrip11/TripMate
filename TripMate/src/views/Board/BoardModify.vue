@@ -4,7 +4,7 @@
         <!-- 게시판 제목 -->
         <v-row justify="center" class="mb-4">
             <v-col cols="auto">
-                <h1 class="display-1">게시물 작성</h1>
+                <h1 class="display-1">게시물 수정</h1>
                 <hr>
             </v-col>
         </v-row>
@@ -64,9 +64,9 @@
 
         <v-row justify="center">
             <v-col cols="12" class="d-flex justify-end">
-                <v-btn @click="savePost" color="success" class="mr-2">등록</v-btn>
+                <v-btn @click="updatePost" color="primary" class="mr-2">수정</v-btn>
                 <router-link :to="{ name: 'board' }">
-                    <v-btn color="info">목록</v-btn>
+                    <v-btn color="info">취소</v-btn>
                 </router-link>
             </v-col>
         </v-row>
@@ -74,46 +74,56 @@
 </template>
 
 <script setup>
-import { createBoard } from "@/api/board"
+import { detailBoard, updateBoard } from "@/api/board"
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+const boardId = route.params.boardId
 
-const post = ref({
-  userId: 1,        // TODO: 바꿔야 함
-  title: "",
-  content: "",
-  filePath: "",
-  category: "소통"
-})
-
+const post = ref({})
 const categories = ['공지사항', '여행 계획 공유', '여행 후기', '소통']
 
-function savePost() {
-  let err = false;
-  let msg = ''
+detailBoard(
+    boardId,
+    ({ data }) => {
+        console.log("detailBoard.........", data)
+        post.value = data
+    },
+    (error) => {
+        console.log(error)
+    }
+)
+detailBoard();
 
-  !post.value.category && ((msg = '카테고리를 선택해 주세요'), (err = true))
-  !err && !post.value.title && ((msg = '제목을 입력해 주세요'), (err = true))
-  !err && !post.value.content && ((msg = '내용을 입력해 주세요'), (err = true))
 
-  if (err) {
-    alert(msg)
-  } else {
-    createBoard(
-        post.value,
-        () => {
-            console.log('savePost.......', post.value);
-            alert('게시물이 저장되었습니다.');
-            router.push({name: 'board'});
-        },
-        (error) => {
-            console.log(error)
-        }
-    )
-  }
+function updatePost() {
+    let err = false;
+    let msg = ''
+
+    !post.value.category && ((msg = '카테고리를 선택해 주세요'), (err = true))
+    !err && !post.value.title && ((msg = '제목을 입력해 주세요'), (err = true))
+    !err && !post.value.content && ((msg = '내용을 입력해 주세요'), (err = true))
+
+    if (err) {
+        alert(msg)
+    } else {
+        updateBoard(
+            boardId,
+            post.value,
+            () => {
+                console.log('updatePost.......', post.value);
+                alert('게시물이 수정되었습니다.');
+                router.push({name: 'board'});
+            },
+            (error) => {
+                console.log(error)
+            }
+        )
+    }
 }
+
 </script>
 
 <style scoped>

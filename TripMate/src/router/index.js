@@ -1,9 +1,10 @@
-import Login from '@/views/Login/Login.vue'
-import PlanCreatePage from '@/views/Plan/PlanCreatePage.vue'
-import PlanListPage from '@/views/Plan/PlanListPage.vue'
-import PlanMainPage from '@/views/Plan/PlanMainPage.vue'
-import { createRouter, createWebHistory } from 'vue-router'
+import Login from '@/views/login/Login.vue'
+import PlanCreatePage from '@/views/plan/PlanCreatePage.vue'
+import PlanListPage from '@/views/plan/PlanListPage.vue'
+import PlanMainPage from '@/views/plan/PlanMainPage.vue'
 import MainPage from '@/views/MainPage.vue';
+
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,14 +31,19 @@ const router = createRouter({
       // component: import('@/views/board/BoardDetail.vue')
     },
     {
-      path: '/board/createId',
+      path: '/board/write',
       name: 'boardCreate',
       component: () => import('@/views/board/BoardCreate.vue')
     },
     {
-      path: '/board/detailId',
+      path: '/board/detail/:boardId',
       name: 'boardDetail',
       component: () => import('@/views/board/BoardDetail.vue')
+    },
+    {
+      path: '/board/write/:boardId',
+      name: 'boardModify',
+      component: () => import('@/views/board/BoardModify.vue')
     },
     {
       path: '/weather',

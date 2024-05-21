@@ -88,71 +88,88 @@
 
         <v-row justify="center">
             <v-col cols="12" class="d-flex justify-end">
+            <router-link :to="{name : 'boardModify', params: { boardId: post.boardId }}" >
                 <v-btn @click="editPost" color="success" class="mr-2">수정</v-btn>
-                <v-btn @click="deletePost" color="error" class="mr-2">삭제</v-btn>
+            </router-link>
+                <v-btn @click="openDeleteDialog" color="error" class="mr-2">삭제</v-btn>
                 <router-link :to="{name : 'board'}" >
-                <v-btn color="info">목록</v-btn>
+                    <v-btn color="info">목록</v-btn>
                  </router-link>
             </v-col>
         </v-row>
+
+        <!-- 삭제 확인 다이얼로그 -->
+        <v-dialog v-model="deleteDialog" max-width="500">
+            <v-card>
+                <v-card-title class="headline">게시물을 삭제하시겠습니까?</v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDeleteDialog">취소</v-btn>
+                    <v-btn color="blue darken-1" text @click="confirmDelete">확인</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            post: {
-                title: '',
-                content: '',
-                author: '',
-            },
-            comments: [], // 댓글 목록
-            newComment: '', // 새로운 댓글
-            similarPosts: [] // 유사한 게시글 목록
-        };
-    },
-    methods: {
-        editPost() {
-            // 게시물 수정 기능 구현
+<script setup>
+import { detailBoard, deleteBoard } from "@/api/board"
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
+const boardId = route.params.boardId
+
+const post = ref({})
+const deleteDialog = ref(false)
+
+const comments = ref([])
+const similarPosts = [
+    { title: '유사 게시글 제목 1', author: '작성자1' },
+    { title: '유사 게시글 제목 2', author: '작성자2' },
+    { title: '유사 게시글 제목 3', author: '작성자3' },
+]
+
+function loadPost() {
+    detailBoard(
+        boardId,
+        ({ data }) => {
+            console.log("loadPost.........", data)
+            post.value = data
         },
-        deletePost() {
-            // 게시물 삭제 기능 구현
-        },
-        submitPost() {
-            // 새로운 게시물 등록 기능 구현
-        },
-        addComment() {
-            // 새로운 댓글 추가 기능 구현
-        },
-        loadSimilarPosts() {
-            // 유사한 게시글 불러오기 기능 구현
+        (error) => {
+            console.log(error)
         }
-    },
-    created() {
-        // 게시물, 댓글, 유사한 게시글 데이터 초기화
-        this.post = {
-            title: '게시물 제목',
-            content: '게시물 내용',
-            author: '작성자',
-            user_profile_picture_url: 'user_profile_picture_url'
-        };
-        this.comments = [
-            { user_name: '댓글 작성자 1', content: '댓글 내용 1' },
-            { user_name: '댓글 작성자 2', content: '진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글진짜진짜긴댓글' }
-        ];
-        this.similarPosts = [
-            { title: '유사 게시글 제목 1', author: '작성자1' },
-            { title: '유사 게시글 제목 2', author: '작성자2' },
-            { title: '유사 게시글 제목 3', author: '작성자3' },
-        ];
-    }
-};
+    )
+}
+loadPost()
+
+function openDeleteDialog() {
+    deleteDialog.value = true
+}
+
+function closeDeleteDialog() {
+    deleteDialog.value = false
+}
+
+function confirmDelete() {
+    deleteBoard(
+        boardId,
+        () => {
+            console.log("deletePost.........")
+            closeDeleteDialog()
+            router.push({ name: 'board' })
+        },
+        (error) => {
+            console.log(error)
+        }
+    )
+}
 </script>
 
 <style scoped>
 .text-h6 {
     font-size: 16px;
-    /* 댓글 내용 크기 조정 */
 }
 </style>
