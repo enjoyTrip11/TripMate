@@ -1,5 +1,8 @@
+import Login from '@/views/Login/Login.vue'
+import PlanCreatePage from '@/views/Plan/PlanCreatePage.vue'
+import PlanListPage from '@/views/Plan/PlanListPage.vue'
+import PlanMainPage from '@/views/Plan/PlanMainPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-
 import MainPage from '@/views/MainPage.vue';
 
 const router = createRouter({
@@ -13,11 +16,6 @@ const router = createRouter({
     {
       path: '/',
       name: 'map',
-      component: MainPage
-    },
-    {
-      path: '/',
-      name: 'plan',
       component: MainPage
     },
     {
@@ -48,11 +46,6 @@ const router = createRouter({
     },
     {
       path: '/',
-      name: 'login',
-      component: MainPage
-    },
-    {
-      path: '/',
       name: 'logout',
       component: MainPage
     },
@@ -66,6 +59,34 @@ const router = createRouter({
       name: 'profile',
       component: MainPage
     },
+    {
+      path: '/plan',
+      name: 'plan',
+      component: PlanMainPage
+    },
+    {
+      path: '/plancreate',
+      name: 'plancreate',
+      component: PlanCreatePage
+    },
+    {
+      path: '/planlist',
+      name: 'planlist',
+      component: PlanListPage
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
+    {
+      path: '/about',
+      name: 'about',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      // component: () => import('../views/AboutView.vue')
+    }
   ]
 })
 
