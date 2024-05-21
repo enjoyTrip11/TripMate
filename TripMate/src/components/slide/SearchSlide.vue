@@ -34,7 +34,7 @@ export default {
     return {
       defalutImg: SearchImage,
       descriptionLine1: '오늘은 ',
-      descriptionLine2: '어디로 떠나볼까?',
+      descriptionLine2: '어디로 가볼까요?',
       locations: [
         {
           location: '경기도 가평군',
