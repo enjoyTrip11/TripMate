@@ -28,23 +28,23 @@ const router = createRouter({
     {
       path: '/board',
       name: 'board',
-      component: import('@/views/board/BoardMainPage.vue')
+      component: () => import('@/views/board/BoardMainPage.vue')
       // component: import('@/views/board/BoardDetail.vue')
     },
     {
       path: '/board/createId',
       name: 'boardCreate',
-      component: import('@/views/board/BoardCreate.vue')
+      component: () => import('@/views/board/BoardCreate.vue')
     },
     {
       path: '/board/detailId',
       name: 'boardDetail',
-      component: import('@/views/board/BoardDetail.vue')
+      component: () => import('@/views/board/BoardDetail.vue')
     },
     {
       path: '/weather',
       name: 'weather',
-      component: import('@/views/weather/WeatherMainPage.vue')
+      component: () => import('@/views/weather/WeatherMainPage.vue')
     },
     {
       path: '/',

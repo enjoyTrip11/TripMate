@@ -18,6 +18,7 @@ import PlanSlide from '@/components/slide/PlanSlide.vue';
 import BoardSlide from '@/components/slide/BoardSlide.vue';
 
 export default {
+
     data() {
         return {
             activeSlide: 0,
