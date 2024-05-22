@@ -22,7 +22,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'hotplace',
-      component: MainPage
+      component: () => import ('@/views/hotplace/HotPlaceMainPage.vue')
     },
     {
       path: '/board',
