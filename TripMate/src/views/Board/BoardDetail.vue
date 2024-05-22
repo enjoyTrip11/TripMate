@@ -38,10 +38,12 @@
                         <v-list>
                             <v-list-item v-for="(reply, index) in replies" :key="index">
                                 <v-row :style="{ 'margin-left': reply.replyUserId ? '30px' : '0' }" align="center">
-                                    <!-- 대댓글 표시 -->
+                                    <!-- 대댓글 아이콘 표시 -->
                                     <v-col cols="1" v-if="reply.replyUserId">
                                         <v-icon>mdi-subdirectory-arrow-right</v-icon>
                                     </v-col>
+
+                                    <!-- 유저 이미지 -->
                                     <v-col cols="auto">
                                         <v-list-item-avatar>
                                             <v-avatar size="30">
@@ -222,12 +224,48 @@ function getReply() {
         ({ data }) => {
             console.log("loadReply......", data);
             replies.value = data;
+            sortReplies(replies)
         },
         (error) => {
             console.log(error);
         }
     );
 }
+
+// 댓글 계층적으로 정렬
+function sortReplies(replies) {
+    // 주어진 boardId에 해당하는 댓글 필터링
+    const filteredReplies = ref(replies);
+
+    // 댓글을 replyId를 키로 하는 객체로 변환
+    const replyMap = {};
+    filteredReplies.value.forEach(reply => {
+        replyMap[reply.replyId] = { ...reply, replies: [] };
+    });
+
+    // 대댓글을 해당 댓글의 replies 배열에 추가
+    const sortedReplies = [];
+    filteredReplies.value.forEach(reply => {
+        if (reply.replyUserId === 0) {
+            sortedReplies.push(replyMap[reply.replyId]);
+        } else if (replyMap[reply.replyUserId]) {
+            replyMap[reply.replyUserId].replies.push(replyMap[reply.replyId]);
+        }
+    });
+
+    // 정렬된 댓글 목록 생성
+    const result = [];
+    sortedReplies.forEach(reply => {
+        result.push(reply);
+        if (reply.replies.length > 0) {
+            result.push(...reply.replies);
+        }
+    });
+
+    console.log("Reply After Sort....." , result)
+    replies.value = result
+}
+
 
 // 새 댓글 추가
 function addComment() {
@@ -255,6 +293,7 @@ function startReply(reply) {
     }
 }
 
+// 댓글 작성
 function submitReply() {
     if (!replyComment.value || !replyingTo.value) return;
     createReply(
