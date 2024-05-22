@@ -11,8 +11,8 @@
 import { KakaoMap, KakaoMapMarker } from 'vue3-kakao-maps';
 
 const coordinate = {
-  lat: 37.566826,
-  lng: 126.9786567
+  lat: 37.501328668708,
+  lng: 127.03953821497
 };
 
 </script>
