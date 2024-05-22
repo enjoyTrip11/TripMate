@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <!-- 내 장소 섹션 -->
-    <v-row v-if="!isLoadingMyPlace && isMyPlaceLoaded && myPlace.length > 0">
+      <v-row v-if="isMyPlaceLoaded">
       <v-col cols="12">
         <v-row justify="center" class="mb-4">
           <v-col cols="auto">
@@ -25,11 +25,11 @@
                     md="4"
                   >
                     <place-card
-                      :hitCount="item.hits"
-                      :imageURL="item.place?.firstImage || '안나오는중'"
-                      :title="item.place?.title || '안나오는중'"
-                      :addr1="item.place?.addr1 || '안나오는중'"
-                      :addr2="item.place?.addr2 || '안나오는중'"
+                      :hitCount="item.raw.hits"
+                      :imageURL="item.raw.place?.firstImage || '안나오는중'"
+                      :title="item.raw.place?.title || '안나오는중'"
+                      :addr1="item.raw.place?.addr1 || '안나오는중'"
+                      :addr2="item.raw.place?.addr2 || '안나오는중'"
                     />
                   </v-col>
                 </v-row>
@@ -85,17 +85,17 @@
               <v-container class="pa-2" fluid>
                 <v-row dense>
                   <v-col
-                    v-for="(item, index) in allPlace"
+                    v-for="(item, index) in items"
                     :key="index"
                     cols="12"
                     md="4"
                   >
                     <place-card
-                      :hitCount="item.hits"
-                      :imageURL="item.place?.firstImage || '안나오는중'"
-                      :title="item.place?.title || '안나오는중'"
-                      :addr1="item.place?.addr1 || '안나오는중'"
-                      :addr2="item.place?.addr2 || '안나오는중'"
+                      :hitCount="item.raw.hits"
+                      :imageURL="item.raw.place?.firstImage || '안나오는중'"
+                      :title="item.raw.place?.title || '안나오는중'"
+                      :addr1="item.raw.place?.addr1 || '안나오는중'"
+                      :addr2="item.raw.place?.addr2 || '안나오는중'"
                     />
                   </v-col>
                 </v-row>
@@ -188,8 +188,8 @@ async function getAllHotPlace() {
 }
 
 onMounted(async () => {
-  await getMyHotPlace();
-  await getAllHotPlace();
+  getMyHotPlace();
+  getAllHotPlace();
 });
 </script>
 
