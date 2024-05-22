@@ -51,6 +51,7 @@ export default {
     return {
       logoDrawer: false,
       logoItems: [
+        { title: '날씨 정보', value: 'weather' },
         { title: '여행지 탐색', value: 'map' },
         { title: '여행 계획', value: 'plan' },
         { title: '핫플레이스', value: 'hotplace' },

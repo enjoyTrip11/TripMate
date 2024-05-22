@@ -11,7 +11,9 @@
           <h2>{{ descriptionLine3 }}</h2>
         </div>
         <div class="mt-10"></div>
+        <router-link :to="{name: 'hotplace'}">
         <v-btn color="primary">핫플레이스 보기</v-btn>
+      </router-link>
       </v-col>
 
       <!-- 이미지 영역 -->
