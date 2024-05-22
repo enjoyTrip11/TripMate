@@ -1,30 +1,28 @@
 <template>
-    <v-card class="mx-auto" elevation="1" width="500" height="480" style="margin-top: 20px;">
-        <v-card-title class="py-5 font-weight-black">로그인</v-card-title>
+  <v-card class="mx-auto" elevation="1" width="500" height="480" style="margin-top: 20px;">
+    <v-card-title class="py-5 font-weight-black">로그인</v-card-title>
 
-        <v-card-text>
-            아이디와 비밀번호를 입력하세요.
-        </v-card-text>
+    <v-card-text>
+      아이디와 비밀번호를 입력하세요.
+    </v-card-text>
 
-        <v-card-text>
-            <div class="text-subtitle-2 font-weight-black mb-1">아이디</div>
+    <v-card-text>
+      <div class="text-subtitle-2 font-weight-black mb-1">아이디</div>
+      <v-text-field v-model="formData.id" label="아이디를 입력하세요" variant="outlined" single-line></v-text-field>
 
-            <v-text-field label="아이디를 입력하세요" variant="outlined" single-line></v-text-field>
+      <div class="text-subtitle-2 font-weight-black mb-1">비밀번호</div>
+      <v-text-field v-model="formData.password" label="비밀번호를 입력하세요" variant="outlined" type="password" single-line></v-text-field>
 
-            <div class="text-subtitle-2 font-weight-black mb-1">비밀번호</div>
-
-            <v-text-field label="비밀번호를 입력하세요" variant="outlined" single-line></v-text-field>
-
-            <v-btn class="text-none login-btn" color="#87C4FF" size="x-large" variant="flat" block>
-                로그인
-            </v-btn>
-            <br>
-            <v-btn class="login-btn" color="white" size="x-large" variant="flat" block @click="loginWithGoogle">
-                <img src="../../assets/img/login/google.png" alt="Google Logo" class="google-logo">
-                구글 로그인
-             </v-btn>
-        </v-card-text>
-    </v-card>
+      <v-btn @click="submitForm" class="text-none login-btn" color="#87C4FF" size="x-large" variant="flat" block>
+        로그인
+      </v-btn>
+      <br>
+      <v-btn class="login-btn" color="white" size="x-large" variant="flat" block @click="loginWithGoogle">
+        <img src="../../assets/img/login/google.png" alt="Google Logo" class="google-logo">
+        구글 로그인
+      </v-btn>
+    </v-card-text>
+  </v-card>
 </template>
 
 <style>
@@ -44,27 +42,39 @@
 </style>
 
 <script>
+import axios from 'axios';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+
 export default {
+  data() {
+    return {
+      formData: {
+        username: '',
+        password: ''
+      }
+    };
+  },
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    return { store, router };
+  },
   methods: {
-    loginWithGoogle() {
-      const url = 'https://accounts.google.com/o/oauth2/v2/auth?client_id=' +
-      '654957689237-7t59r5ularmkvht7ehen4segrdasru12.apps.googleusercontent.com' +
-      '&redirect_uri=' +
-      'http://localhost:8080/login/oauth2/code/google' +
-      '&response_type=code' +
-      '&scope=email profile';
-      window.location.href = url;
+    async submitForm() {
+      try {
+        const response = await axios.post('http://localhost:8080/user/login', this.formData);
+        const accessToken = response.data.accessToken;
+        this.store.dispatch('saveAccessToken', accessToken);
+        console.log('로그인 성공:', response.data);
+        this.router.push('/'); // 로그인 성공 시 메인페이지로 이동
+      } catch (error) {
+        console.error('로그인 실패:', error);
+      }
     },
-    mounted() {
-    // URL 파라미터에서 토큰 추출
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    console.log("JWT Token:", token);
-    if (token) {
-      // 토큰을 로컬 스토리지에 저장하거나 필요한 처리 수행
-      localStorage.setItem('jwt', token);
+    loginWithGoogle() {
+      // 구글 로그인 로직을 여기에 추가하세요.
     }
   }
-}
 }
 </script>
