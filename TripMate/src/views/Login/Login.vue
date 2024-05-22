@@ -19,7 +19,7 @@
                 로그인
             </v-btn>
             <br>
-            <v-btn class="login-btn" color="white" size="x-large" variant="flat" block>
+            <v-btn class="login-btn" color="white" size="x-large" variant="flat" block @click="loginWithGoogle">
                 <img src="../../assets/img/login/google.png" alt="Google Logo" class="google-logo">
                 구글 로그인
              </v-btn>
@@ -42,3 +42,29 @@
   max-height: 24px; /* 버튼 크기를 넘지 않도록 설정 */
 }
 </style>
+
+<script>
+export default {
+  methods: {
+    loginWithGoogle() {
+      const url = 'https://accounts.google.com/o/oauth2/v2/auth?client_id=' +
+      '654957689237-7t59r5ularmkvht7ehen4segrdasru12.apps.googleusercontent.com' +
+      '&redirect_uri=' +
+      'http://localhost:8080/login/oauth2/code/google' +
+      '&response_type=code' +
+      '&scope=email profile';
+      window.location.href = url;
+    },
+    mounted() {
+    // URL 파라미터에서 토큰 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    console.log("JWT Token:", token);
+    if (token) {
+      // 토큰을 로컬 스토리지에 저장하거나 필요한 처리 수행
+      localStorage.setItem('jwt', token);
+    }
+  }
+}
+}
+</script>

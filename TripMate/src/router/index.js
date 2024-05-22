@@ -1,4 +1,5 @@
 import Login from '@/views/Login/Login.vue'
+import SignUp from '@/views/Login/SignUp.vue'
 import PlanCreatePage from '@/views/Plan/PlanCreatePage.vue'
 import PlanListPage from '@/views/Plan/PlanListPage.vue'
 import PlanMainPage from '@/views/Plan/PlanMainPage.vue'
@@ -26,18 +27,18 @@ const router = createRouter({
     {
       path: '/board',
       name: 'board',
-      component: () => import('@/views/board/BoardMainPage.vue')
+      component: () => import('@/views/Board/BoardMainPage.vue')
       // component: import('@/views/board/BoardDetail.vue')
     },
     {
       path: '/board/createId',
       name: 'boardCreate',
-      component: () => import('@/views/board/BoardCreate.vue')
+      component: () => import('@/views/Board/BoardCreate.vue')
     },
     {
       path: '/board/detailId',
       name: 'boardDetail',
-      component: () => import('@/views/board/BoardDetail.vue')
+      component: () => import('@/views/Board/BoardDetail.vue')
     },
     {
       path: '/weather',
@@ -78,6 +79,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: SignUp
     },
     {
       path: '/about',
