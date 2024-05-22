@@ -8,8 +8,8 @@ function loadReply(boardId, success, fail) {
         .catch(fail)
 }
 
-function updateReply(replyId, reply, success, fail) {
-    local.put(`reply/${replyId}`, JSON.stringify(reply))
+function updateReply(replyId, boardId, updatedReply, success, fail) {
+    local.put(`reply/${replyId}?boardId=${boardId}`, JSON.stringify(updatedReply))
         .then(success)
         .catch(fail)
 }

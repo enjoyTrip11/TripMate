@@ -193,14 +193,6 @@ const editingComment = ref(null);
 const editComment = ref('');
 
 const curUserId = 1; // TODO : 접속자 ID로 바꿔주어야 함
-
-const updateDto = ref({
-    boardId: 0,
-    userId: curUserId,
-    replyUserId: 0,
-    comment: ""
-});
-
 const similarPosts = [
     { title: '유사 게시글 제목 1', author: '작성자1' },
     { title: '유사 게시글 제목 2', author: '작성자2' },
@@ -293,10 +285,13 @@ function isEditing(reply) {
     return editingComment.value && editingComment.value.replyId === reply.replyId;
 }
 
+// 댓글 수정
 function updateComment() {
+
+    console.log("Update........boardId:" , boardId, ", replyId:", editingComment.value.replyId, ", comment:", editComment.value)
     if (!editComment.value || !editingComment.value) return;
     updateReply(
-        { boardId, replyId: editingComment.value.replyId, comment: editComment.value },
+        editingComment.value.replyId, boardId, {comment : editComment.value},
         ({ data }) => {
             console.log("updateReply......", data);
             editComment.value = '';
@@ -314,6 +309,7 @@ function cancelEdit() {
     editComment.value = '';
 }
 
+// 댓글 삭제 관련 
 function openCommentDeleteDialog(replyId) {
     console.log("deleteComment........", replyId);
     deleteCommentId.value = replyId;
@@ -345,7 +341,7 @@ function confirmDeleteComment() {
 }
 
 
-// 게시물 삭제
+// 게시물 삭제 관련
 function openDeleteDialog() {
     deleteDialog.value = true;
 }
