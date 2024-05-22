@@ -3,7 +3,7 @@
         <!-- 게시판 제목 -->
         <v-row justify="center" class="mb-4">
             <v-col cols="auto">
-                <h1 class="display-1">게시판</h1>
+                <h1 class="display-1">{{ selectedCategory}}</h1>
                 <hr>
             </v-col>
         </v-row>
@@ -125,6 +125,7 @@ const filteredPosts = computed(() => {
 })
 
 function selectCategory(category) {
+    
     selectedCategory.value = category
 }
 

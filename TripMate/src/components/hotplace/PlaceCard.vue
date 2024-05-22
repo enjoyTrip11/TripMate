@@ -1,11 +1,12 @@
 <template>
-  <v-card>
+  <v-card class="place-card">
     <!-- 이미지 -->
-    <v-img :src="imageURL" height="200px" width="250px" class="ml-4"></v-img>
-    <!-- 하트 아이콘 아래에 hits 값 출력 -->
-    <v-card-text class="text-center">
-      <v-icon>mdi-heart</v-icon> {{ hitCount }}
-    </v-card-text>
+    <v-img :src="imageURL" height="200px" class="place-image"></v-img>
+
+    <!-- 찜버튼을 이미지의 오른쪽 상단에 배치 -->
+    <v-btn icon @click="toggleFavorite" class="favorite-button">
+      <v-icon :color="isFavorited ? 'pink' : 'grey'">mdi-heart</v-icon> {{ hitCount }}
+    </v-btn>
 
     <!-- Title 출력 -->
     <v-card-title class="text-center">{{ title }}</v-card-title>
@@ -16,7 +17,7 @@
 </template>
 
 <script setup>
-import { computed, toRefs } from 'vue'; // Import toRefs from Vue reactivity package
+import { ref, computed, toRefs } from 'vue'; // Import Vue reactivity package
 
 // Define props
 const props = defineProps({
@@ -26,14 +27,47 @@ const props = defineProps({
   addr1: String,
 });
 
-// Compute imageURL based on props
-const imageURL = computed(() => props.imageURL || props.secondImage);
+// State to manage favorite status
+const isFavorited = ref(false);
+
+// Method to toggle favorite status
+const toggleFavorite = () => {
+  isFavorited.value = !isFavorited.value;
+  // Emit an event to the parent component if needed
+  // emit('toggle-favorite', isFavorited.value);
+};
 
 // Convert reactive properties to plain references
 const { hitCount, title, addr1 } = toRefs(props);
-
 </script>
 
-<style>
-/* 필요한 스타일링 추가 */
+<style scoped>
+.place-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+}
+
+.place-image {
+  width: 100%;
+  object-fit: cover;
+}
+
+.favorite-button {
+  position: absolute;
+  top: 80%;
+  left: 40%;
+  background: white;
+  border-radius: 50%;
+}
+
+.v-btn {
+  display: flex;
+  align-items: center;
+}
+
+.v-btn .v-icon {
+  margin-right: 5px;
+}
 </style>

@@ -1,28 +1,26 @@
 <template>
-  <v-container>
+  <v-container class="container">
     <!-- 내 장소 섹션 -->
-      <v-row v-if="isMyPlaceLoaded">
+    <v-row v-if="isMyPlaceLoaded">
       <v-col cols="12">
         <v-row justify="center" class="mb-4">
           <v-col cols="auto">
             <h1 class="display-1" style="text-align: center;">내 장소</h1>
             <hr>
             <p class="mt-3 mb-5">좋아하시는 장소를 모아뒀어요!</p>
-          </v-col>   
+          </v-col>
         </v-row>
-        <v-card>
-          <v-data-iterator
-            :items="myPlace"
-            :items-per-page="3"
-          >
+        <v-card class="custom-card noshadow" >
+          <v-data-iterator  :items="myPlace" :items-per-page="3">
             <template v-slot:default="{ items }">
-              <v-container class="pa-2" fluid>
-                <v-row dense>
+              <v-container class="pa-5" fluid>
+                <v-row dense :gutter="32">
                   <v-col
                     v-for="(item, index) in items"
                     :key="index"
                     cols="12"
                     md="4"
+                    class="pa-5"
                   >
                     <place-card
                       :hitCount="item.raw.hits"
@@ -30,11 +28,13 @@
                       :title="item.raw.place?.title || '안나오는중'"
                       :addr1="item.raw.place?.addr1 || '안나오는중'"
                       :addr2="item.raw.place?.addr2 || '안나오는중'"
+                      class="custom-place-card"
                     />
                   </v-col>
                 </v-row>
               </v-container>
             </template>
+
 
             <template v-slot:footer="{ page, pageCount, prevPage, nextPage }">
               <div class="d-flex align-center justify-center pa-4">
@@ -47,9 +47,7 @@
                   @click="prevPage"
                 ></v-btn>
 
-                <div class="mx-2 text-caption">
-                  Page {{ page }} of {{ pageCount }}
-                </div>
+                <div class="mx-2 text-caption">Page {{ page }} of {{ pageCount }}</div>
 
                 <v-btn
                   :disabled="page >= pageCount"
@@ -74,21 +72,19 @@
             <h1 class="display-1" style="text-align: center;">핫플레이스</h1>
             <hr>
             <p class="mt-3 mb-5">인기있는 장소들을 둘러보세요!</p>
-          </v-col>   
+          </v-col>
         </v-row>
-        <v-card>
-          <v-data-iterator
-            :items="allPlace"
-            :items-per-page="3"
-          >
+        <v-card class="custom-card">
+          <v-data-iterator :items="allPlace" :items-per-page="3">
             <template v-slot:default="{ items }">
               <v-container class="pa-2" fluid>
-                <v-row dense>
+                <v-row dense :gutter="32">
                   <v-col
                     v-for="(item, index) in items"
                     :key="index"
                     cols="12"
                     md="4"
+                    class="pa-4"
                   >
                     <place-card
                       :hitCount="item.raw.hits"
@@ -96,6 +92,7 @@
                       :title="item.raw.place?.title || '안나오는중'"
                       :addr1="item.raw.place?.addr1 || '안나오는중'"
                       :addr2="item.raw.place?.addr2 || '안나오는중'"
+                      class="custom-place-card"
                     />
                   </v-col>
                 </v-row>
@@ -113,9 +110,7 @@
                   @click="prevPage"
                 ></v-btn>
 
-                <div class="mx-2 text-caption">
-                  Page {{ page }} of {{ pageCount }}
-                </div>
+                <div class="mx-2 text-caption">Page {{ page }} of {{ pageCount }}</div>
 
                 <v-btn
                   :disabled="page >= pageCount"
@@ -145,7 +140,6 @@
 import { onMounted, ref } from 'vue';
 import { loadMyHotPlace, loadAllHotPlace } from "@/api/hotplace";
 import PlaceCard from '@/components/hotplace/PlaceCard.vue';
-import { all } from 'axios';
 
 const userId = 1; // TODO: 현재 userId로 바꾸기
 const myPlace = ref([]);
@@ -193,10 +187,33 @@ onMounted(async () => {
 });
 </script>
 
-<style>
+<style scoped>
+.container {
+  max-width: 1280px;
+}
+
+.noshadow {
+  box-shadow: none !important;
+}
+
 .scroll-container {
   display: flex;
   overflow-x: auto;
   scroll-behavior: smooth;
+}
+
+.pa-4 {
+  padding: 16px 20px;
+}
+
+.custom-card {
+  width: 100%;
+  max-width: 1500px; /* Increase the max-width to make the card wider */
+  margin: auto;
+}
+
+.custom-place-card {
+  width: 100%;
+  height: 400px; /* Set a fixed height for place cards */
 }
 </style>
