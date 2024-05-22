@@ -21,7 +21,8 @@
     "vue-fullpage.js": "^0.2.17",
     "vue-router": "^4.3.0",
     "vue3-kakao-maps": "^2.3.9",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

@@ -1,10 +1,10 @@
 import Login from '@/views/login/Login.vue'
+import SignUp from '@/views/login/SignUp.vue'
 import PlanCreatePage from '@/views/plan/PlanCreatePage.vue'
 import PlanListPage from '@/views/plan/PlanListPage.vue'
 import PlanMainPage from '@/views/plan/PlanMainPage.vue'
-import MainPage from '@/views/MainPage.vue';
-
 import { createRouter, createWebHistory } from 'vue-router'
+import MainPage from '@/views/MainPage.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -84,6 +84,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: SignUp
     },
     {
       path: '/about',
