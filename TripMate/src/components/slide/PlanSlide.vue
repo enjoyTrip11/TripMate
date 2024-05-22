@@ -11,7 +11,9 @@
           <h2>{{ descriptionLine3 }}</h2>
         </div>
         <div class="mt-10"></div>
+        <router-link :to="{ name : 'plan'}">
         <v-btn color="primary">계획 더보기</v-btn>
+      </router-link>
       </v-col>
 
       <!-- 이미지 영역 -->

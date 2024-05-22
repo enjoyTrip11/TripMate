@@ -12,7 +12,7 @@
 
 <script>
 import WeatherSlide from '@/components/slide/WeatherSlide.vue';
-import SearchSlide from '@/components/slide/SearchSlide.vue';
+import MapSlide from '@/components/slide/MapSlide.vue';
 import PlaceSlide from '@/components/slide/PlaceSlide.vue';
 import PlanSlide from '@/components/slide/PlanSlide.vue';
 import BoardSlide from '@/components/slide/BoardSlide.vue';
@@ -24,7 +24,7 @@ export default {
             activeSlide: 0,
             mainPageContents: [
                 { component: WeatherSlide },
-                { component: SearchSlide },
+                { component: MapSlide },
                 { component: PlaceSlide },
                 { component: PlanSlide },
                 { component: BoardSlide }

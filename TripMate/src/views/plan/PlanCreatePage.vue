@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-row class="ga-5">
             <!-- 왼쪽 검색창 -->
             <v-col>
@@ -174,6 +174,10 @@ watch(selectedPlace, updateMarkerList);
 </script>
 
 <style>
+.ga-5 {
+    width: 100%;
+}
+
 .dragArea {
     list-style-type: none;
     padding: 0;

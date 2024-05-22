@@ -15,7 +15,9 @@
           </h2>
         </div>
         <div class="mt-10"></div>
-        <v-btn color="primary" @click="goToSearchPage">장소 더보기</v-btn>
+        <router-link to="map">
+        <v-btn color="primary">장소 더보기</v-btn>
+      </router-link>
       </v-col>
 
       <!-- 이미지 영역 -->
@@ -155,9 +157,6 @@ export default {
     },
   },
   methods: {
-    goToSearchPage() {
-      this.$router.push('/search');
-    },
     startAutoChange() {
       // 자동 변경 시작
       this.intervalId = setInterval(() => {
