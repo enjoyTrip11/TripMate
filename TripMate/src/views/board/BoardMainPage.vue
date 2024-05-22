@@ -28,7 +28,22 @@
                 <!-- <v-col cols="6">
                         <v-text-field v-model="search" label="검색" dense outlined class="custom-search" solo-inverted
                             append-icon="mdi-magnify" max-width="400"></v-text-field>
-                    </v-col> -->
+                    </v-col>
+
+                    <template v-slot:header>
+        <v-toolbar class="px-2">
+          <v-text-field
+            v-model="search"
+            density="comfortable"
+            placeholder="Search"
+            prepend-inner-icon="mdi-magnify"
+            style="max-width: 300px;"
+            variant="solo"
+            clearable
+            hide-details
+          ></v-text-field>
+        </v-toolbar>
+      </template> -->
                     
                 <!-- 게시물 리스트 -->
                 <v-list>
