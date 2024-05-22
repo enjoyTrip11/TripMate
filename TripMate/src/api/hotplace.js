@@ -15,7 +15,7 @@ async function loadMyHotPlace(userId, success, fail) {
 }
 
 async function updateHotPlace(locationId, userId, success, fail) {
-    local.post('hotplace', {params : {locationId: locationId, userId:userId}})
+        local.post(`hotplace?locationId=${locationId}&userId=${userId}`)
         .then(success)
         .catch(fail)
 }

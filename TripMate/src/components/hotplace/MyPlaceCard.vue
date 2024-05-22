@@ -17,16 +17,12 @@
 </template>
 
 <script setup>
-import { ref, computed, toRefs } from 'vue'; // Import Vue reactivity package
+import { ref, toRefs } from 'vue'; // Import Vue reactivity package
 import { deleteHotPlace } from "@/api/hotplace";
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-const userId = 1; // TODO: 현재 페이지의 유저 ID로 대치
 
 // Define props
 const props = defineProps({
+  userId: Number,
   locationId: Number,
   hitCount: Number,
   imageURL: String,
@@ -37,19 +33,12 @@ const props = defineProps({
 // State to manage favorite status
 const isFavorited = ref(true);
 
-// Method to toggle favorite status
-const toggleFavorite = () => {
-  isFavorited.value = !isFavorited.value;
-  // Emit an event to the parent component if needed
-  // emit('toggle-favorite', isFavorited.value);
-};
-
 function removeHotPlace(locationId) {
-  console.log("Delete HotPlace........userId:", userId, ", locationId:", locationId)
+  console.log("Delete HotPlace........userId:", props.userId, ", locationId:", locationId)
 
   deleteHotPlace(
     locationId,
-    userId,
+    props.userId,
     () => {
       console.log("Success!......")
       window.location.reload();

@@ -10,7 +10,7 @@
     <v-card-text class="text-center">{{ addr1 }}</v-card-text>
     
     <!-- 찜버튼을 이미지의 오른쪽 상단에 배치 -->
-    <v-btn icon @click="toggleFavorite" class="favorite-button">
+    <v-btn icon @click="toggleFavorite(locationId)" class="favorite-button">
       <v-icon :color="isFavorited ? 'pink' : 'grey'">mdi-heart</v-icon>{{ hitCount }}
     </v-btn>
   </v-card>
@@ -18,9 +18,12 @@
 
 <script setup>
 import { ref } from 'vue'; // Import Vue reactivity package
+import { deleteHotPlace, updateHotPlace } from "@/api/hotplace";
+import { useRouter } from 'vue-router';
 
 // Define props
 const props = defineProps({
+  userId: Number,
   locationId: Number,
   hitCount: Number,
   imageURL: String,
@@ -29,14 +32,55 @@ const props = defineProps({
   isFavorited: Boolean,
 });
 
+const router = useRouter();
+
 // State to manage favorite status
 const isFavorited = ref(props.isFavorited);
 
-const toggleFavorite = () => {
-  isFavorited.value = !isFavorited.value;
+const toggleFavorite = (locationId) => {
+  if (isFavorited.value) {
+    removeHotPlace(locationId)
+  } else {
+    registHotPlace(locationId)
+  }
+  // window.location.reload()
+  // isFavorited.value = !isFavorited.value;
   // Emit an event to the parent component if needed
   // emit('toggle-favorite', isFavorited.value);
 };
+
+function removeHotPlace(locationId) {
+  console.log("Delete HotPlace........userId:", props.userId, ", locationId:", locationId)
+
+  deleteHotPlace(
+    locationId,
+    props.userId,
+    () => {
+      console.log("Success!......")
+      window.location.reload()
+    }, 
+    ({ error }) => {
+      console.log("Fail to Delete MyHotPlace.....", error);
+    }
+  )
+}
+
+function registHotPlace(locationId) {
+  console.log("Regist HotPlace........userId:", props.userId, ", locationId:", locationId)
+
+  updateHotPlace(
+    locationId,
+    props.userId,
+    ({ data }) => {
+      console.log("Success!......data:", data)
+      window.location.reload()
+    }, 
+    ({ error }) => {
+      console.log("Fail to Regist MyHotPlace.....", error);
+    }
+  )
+}
+
 </script>
 
 <style scoped>

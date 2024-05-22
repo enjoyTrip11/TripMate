@@ -23,6 +23,7 @@
                     class="pa-5"
                   >
                     <MyPlaceCard
+                      :userId = userId
                       :location-id="item.raw.place.locationId"
                       :hitCount="item.raw.hits"
                       :imageURL="item.raw.place?.firstImage || '안나오는중'"
@@ -87,12 +88,14 @@
                     class="pa-4"
                   >
                     <AllPlaceCard
+                      :userId=userId
                       :location-id="item.raw.place.locationId"
                       :hitCount="item.raw.hits"
                       :imageURL="item.raw.place?.firstImage || '안나오는중'"
                       :title="item.raw.place?.title || '안나오는중'"
                       :addr1="item.raw.place?.addr1 || '안나오는중'"
                       :addr2="item.raw.place?.addr2 || '안나오는중'"
+                      :is-favorited="isFavorited(item.raw.place?.locationId)"
                       class="custom-place-card"
                     />
                   </v-col>
@@ -183,9 +186,10 @@ async function getAllHotPlace() {
   );
 }
 
-function isFavorited(place) {
-  if (!place) return false;
-  return myPlace.value.some(myPlaceItem => myPlaceItem.raw.place?.locationId === place?.locationId);
+function isFavorited(locationId) {
+  if (!myPlace.value) return
+  console.log("Favorite 계산 수행 중..")
+  return myPlace.value.some(item => item.place.locationId === locationId);
 }
 
 onMounted(async () => {
