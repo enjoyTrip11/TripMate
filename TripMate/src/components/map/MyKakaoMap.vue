@@ -1,6 +1,5 @@
 <template>
-  <v-container fluid
-  >
+  <v-container fluid>
     <KakaoMap :lat="coordinate.lat" :lng="coordinate.lng" :draggable="true" width="100%">
       <KakaoMapMarker :lat="coordinate.lat" :lng="coordinate.lng"></KakaoMapMarker>
     </KakaoMap>
@@ -14,8 +13,12 @@ const coordinate = {
   lat: 37.501328668708,
   lng: 127.03953821497
 };
-
 </script>
 
 <style scoped>
+.v-container--fluid {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
 </style>
