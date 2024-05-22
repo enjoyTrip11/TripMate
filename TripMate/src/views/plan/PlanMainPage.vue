@@ -1,4 +1,5 @@
 <template>
+    <v-container fluid>
     <div class="wrapper">
         <v-card class="mx-auto custom-card" color="white" d-flex justify-center align-center>
             <v-img height="600" color="#E0F4FF" cover class="img-center">
@@ -117,6 +118,7 @@
             </v-container>
         </v-form>
     </div>
+</v-container>
 </template>
 
 <script>
@@ -211,7 +213,7 @@ export default {
 
 <style scoped>
 .custom-card {
-    width: 1500px;
+    width: 100%;
     /* height: 950px; */
     margin-top: 20px;
     padding: 20px;
