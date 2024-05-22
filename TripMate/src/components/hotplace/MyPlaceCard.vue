@@ -3,24 +3,31 @@
     <!-- 이미지 -->
     <v-img :src="imageURL" height="200px" class="place-image"></v-img>
 
-    <!-- 찜버튼을 이미지의 오른쪽 상단에 배치 -->
-    <v-btn icon @click="toggleFavorite" class="favorite-button">
-      <v-icon :color="isFavorited ? 'pink' : 'grey'">mdi-heart</v-icon> {{ hitCount }}
-    </v-btn>
-
     <!-- Title 출력 -->
     <v-card-title class="text-center">{{ title }}</v-card-title>
 
     <!-- addr1 출력 -->
     <v-card-text class="text-center">{{ addr1 }}</v-card-text>
+    
+    <!-- 찜버튼을 이미지의 오른쪽 상단에 배치 -->
+    <v-btn icon @click="removeHotPlace(locationId)" class="favorite-button">
+      <v-icon :color="isFavorited ? 'pink' : 'grey'">mdi-heart</v-icon>
+    </v-btn>
   </v-card>
 </template>
 
 <script setup>
 import { ref, computed, toRefs } from 'vue'; // Import Vue reactivity package
+import { deleteHotPlace } from "@/api/hotplace";
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const userId = 1; // TODO: 현재 페이지의 유저 ID로 대치
 
 // Define props
 const props = defineProps({
+  locationId: Number,
   hitCount: Number,
   imageURL: String,
   title: String,
@@ -28,7 +35,7 @@ const props = defineProps({
 });
 
 // State to manage favorite status
-const isFavorited = ref(false);
+const isFavorited = ref(true);
 
 // Method to toggle favorite status
 const toggleFavorite = () => {
@@ -36,6 +43,23 @@ const toggleFavorite = () => {
   // Emit an event to the parent component if needed
   // emit('toggle-favorite', isFavorited.value);
 };
+
+function removeHotPlace(locationId) {
+  console.log("Delete HotPlace........userId:", userId, ", locationId:", locationId)
+
+  deleteHotPlace(
+    locationId,
+    userId,
+    () => {
+      console.log("Success!......")
+      window.location.reload();
+    }, 
+    ({ error }) => {
+      console.log("Fail to Delete MyHotPlace.....", error);
+    }
+  )
+}
+
 
 // Convert reactive properties to plain references
 const { hitCount, title, addr1 } = toRefs(props);

@@ -10,8 +10,8 @@
             <p class="mt-3 mb-5">좋아하시는 장소를 모아뒀어요!</p>
           </v-col>
         </v-row>
-        <v-card class="custom-card noshadow" >
-          <v-data-iterator  :items="myPlace" :items-per-page="3">
+        <v-card class="custom-card noshadow">
+          <v-data-iterator :items="myPlace" :items-per-page="3">
             <template v-slot:default="{ items }">
               <v-container class="pa-5" fluid>
                 <v-row dense :gutter="32">
@@ -22,7 +22,8 @@
                     md="4"
                     class="pa-5"
                   >
-                    <place-card
+                    <MyPlaceCard
+                      :location-id="item.raw.place.locationId"
                       :hitCount="item.raw.hits"
                       :imageURL="item.raw.place?.firstImage || '안나오는중'"
                       :title="item.raw.place?.title || '안나오는중'"
@@ -34,7 +35,6 @@
                 </v-row>
               </v-container>
             </template>
-
 
             <template v-slot:footer="{ page, pageCount, prevPage, nextPage }">
               <div class="d-flex align-center justify-center pa-4">
@@ -86,7 +86,8 @@
                     md="4"
                     class="pa-4"
                   >
-                    <place-card
+                    <AllPlaceCard
+                      :location-id="item.raw.place.locationId"
                       :hitCount="item.raw.hits"
                       :imageURL="item.raw.place?.firstImage || '안나오는중'"
                       :title="item.raw.place?.title || '안나오는중'"
@@ -139,7 +140,8 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { loadMyHotPlace, loadAllHotPlace } from "@/api/hotplace";
-import PlaceCard from '@/components/hotplace/PlaceCard.vue';
+import MyPlaceCard from '@/components/hotplace/MyPlaceCard.vue';
+import AllPlaceCard from '@/components/hotplace/AllPlaceCard.vue';
 
 const userId = 1; // TODO: 현재 userId로 바꾸기
 const myPlace = ref([]);
@@ -179,6 +181,11 @@ async function getAllHotPlace() {
       isAllPlaceLoaded.value = true; // 오류가 발생해도 로딩 플래그는 true로 설정
     }
   );
+}
+
+function isFavorited(place) {
+  if (!place) return false;
+  return myPlace.value.some(myPlaceItem => myPlaceItem.raw.place?.locationId === place?.locationId);
 }
 
 onMounted(async () => {

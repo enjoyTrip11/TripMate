@@ -20,8 +20,8 @@ async function updateHotPlace(locationId, userId, success, fail) {
         .catch(fail)
 }
 
-async function deleteHotPlace(hotplaceId, success, fail) {
-    local.delete('hotplace', {params : { hotplaceId : hotplaceId}})
+async function deleteHotPlace(locationId, userId, success, fail) {
+    local.delete('hotplace', {params : { locationId : locationId, userId: userId}})
     .then(success)
     .catch(fail)
 }
