@@ -15,9 +15,9 @@ const router = createRouter({
       component: MainPage
     },
     {
-      path: '/',
+      path: '/map',
       name: 'map',
-      component: MainPage
+      component: () => import ('@/views/map/MapMainPage.vue')
     },
     {
       path: '/hotplace',
@@ -71,13 +71,13 @@ const router = createRouter({
       component: PlanMainPage
     },
     {
-      path: '/plancreate',
-      name: 'plancreate',
+      path: '/plan/create',
+      name: 'planCreate',
       component: PlanCreatePage
     },
     {
-      path: '/planlist',
-      name: 'planlist',
+      path: '/plan/list',
+      name: 'planList',
       component: PlanListPage
     },
     {

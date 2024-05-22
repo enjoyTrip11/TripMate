@@ -65,7 +65,9 @@
                         </v-col>
                     </v-row>
                     <div class="d-flex justify-center">
+                        <router-link :to="{ name: 'planCreate'}">
                         <v-btn depressed width="150px">여행하기</v-btn>
+                    </router-link>
                     </div>
                 </v-container>
             </v-form>
