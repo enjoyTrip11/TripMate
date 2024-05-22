@@ -39,7 +39,7 @@
                             <v-list-item v-for="(reply, index) in replies" :key="index">
                                 <v-row :style="{ 'margin-left': reply.replyUserId ? '30px' : '0' }" align="center">
                                     <!-- 대댓글 아이콘 표시 -->
-                                    <v-col cols="1" v-if="reply.replyUserId">
+                                    <v-col cols="auto" v-if="reply.replyUserId">
                                         <v-icon>mdi-subdirectory-arrow-right</v-icon>
                                     </v-col>
 
