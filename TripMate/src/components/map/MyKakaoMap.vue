@@ -24,19 +24,54 @@
         <v-btn class="toggle-button" @click="toggleListVisibility">
           {{ isListVisible ? '목록 닫기' : '목록 열기' }}
         </v-btn>
-        <KakaoMap v-if="isMapVisible" :lat="center.lat" :lng="center.lng" :scrollwheel="true" :draggable="true" width="100%" height="600px" @onLoadKakaoMap="onLoadKakaoMap">
-          <KakaoMapMarker
-            v-for="place in places" 
-            :key="place.id" 
-            :lat="place.latitude" 
-            :lng="place.longitude"
-          >
+        <KakaoMap v-if="isMapVisible" :lat="center.lat" :lng="center.lng" :scrollwheel="true" :draggable="true"
+          width="100%" height="600px" @onLoadKakaoMap="onLoadKakaoMap">
+          <KakaoMapMarker v-for="place in places" :key="place.id" :lat="place.latitude" :lng="place.longitude" :image="{
+            imageSrc: 'pin3.png',
+            imageWidth: 40,
+            imageHeight: 40,
+            imageOption: {}
+          }" :clickable="true" @on-click-kakao-map-marker="openModal(place)">
             <div>{{ place.name }}</div>
           </KakaoMapMarker>
         </KakaoMap>
         <v-btn class="bounds-button" @click="setBounds">지도 범위 재설정</v-btn>
       </div>
     </div>
+
+    <!-- 모달  -->
+    <div class="modal" v-if="modalOpen" @click.self="closeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <div class="favorite-button">
+          <v-btn icon class="favorite-icon" @click.stop="toggleFavorite(selectedPlace)">
+            <v-icon v-if="selectedPlace.isFavorite">mdi-heart</v-icon>
+            <v-icon v-else>mdi-heart-outline</v-icon>
+          </v-btn>
+        </div> -->
+        <div class="mb-5">
+        <div class="close-icon" @click="closeModal">
+          <v-icon>mdi-close</v-icon>
+        </div>
+      </div>
+      </div>
+      <template v-if="isLoading">
+        <v-progress-circular color="primary" indeterminate></v-progress-circular>
+      </template>
+      <template v-else>
+        <div v-if="!showOverview">
+          <img :src="selectedPlace.firstImage || 'noImage.png'" alt="Place Image" />
+          <h2>{{ selectedPlace.title }}</h2>
+          <p class="address">{{ selectedPlace.addr1 }}</p>
+          <button @click="toggleOverview" style="font-weight: bold;">자세히 보기</button>
+        </div>
+        <div v-else class="overview">
+          <p>{{ selectedPlace.overview }}</p>
+          <button @click="toggleOverview" class="mt-3" style="font-weight: bold;">돌아가기</button>
+        </div>
+      </template>
+    </div>
+  </div>
   </v-container>
 </template>
 
@@ -61,6 +96,32 @@ const center = ref({
 let map = ref(null);
 const bounds = ref(null);
 const initialBounds = ref(null); // 초기 bounds 저장용 변수
+
+// 모달
+const modalOpen = ref(false);
+const selectedPlace = ref(null);
+const isLoading = ref(false);
+const showOverview = ref(false);
+
+const openModal = (place) => {
+  console.log("Open modal....place:", place);
+  selectedPlace.value = null;
+  isLoading.value = true;
+  setTimeout(() => {
+    selectedPlace.value = place;
+    isLoading.value = false;
+  }, 500); // 로딩 시간을 시뮬레이션하기 위해 500ms 지연
+  modalOpen.value = true;
+};
+
+const closeModal = () => {
+  modalOpen.value = false;
+  showOverview.value = false;
+};
+
+const toggleOverview = () => {
+  showOverview.value = !showOverview.value;
+};
 
 // 목록을 열고 닫는 함수
 const toggleListVisibility = () => {
@@ -118,11 +179,11 @@ const toggleFavorite = (place) => {
 
 // 클릭 시 해당 위치로 지도 이동 및 초기 bounds로 돌아가는 함수
 const moveToMarker = (place) => {
-    map.value.setBounds(initialBounds.value);
-    center.value = {
-      lat: place.latitude,
-      lng: place.longitude
-    };
+  map.value.setBounds(initialBounds.value);
+  center.value = {
+    lat: place.latitude,
+    lng: place.longitude
+  };
 };
 
 // 지도 로드 시 콜백 함수
@@ -239,5 +300,50 @@ const updateList = () => {
 .favorite-icon {
   background: none;
   box-shadow: none;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 500px;
+  max-height: 80%;
+  overflow-y: auto; /* 내용이 넘칠 경우 스크롤바 추가 */
+  position: relative;
+}
+
+.close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.modal-content img {
+  position: relative;
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.address {
+  margin-bottom: 10px;
+}
+
+.overview {
+  text-align: center;
 }
 </style>
