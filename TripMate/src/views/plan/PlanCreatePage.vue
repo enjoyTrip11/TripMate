@@ -1,5 +1,12 @@
 <template>
     <v-container fluid>
+        <!-- 날씨 정보 제목 -->
+        <v-row justify="center" class="mb-4">
+            <v-col cols="auto">
+                <h1 class="display-1">{{ editedText[0] }}</h1>
+                <hr>
+            </v-col>
+        </v-row>
         <v-row justify="center" class="mb-0">
             <CategoryBar @updateSearchFilter="handleSearchFilterUpdate" />
         </v-row>
@@ -117,23 +124,23 @@ const plans = ref([]);
 const invites = ref([]);
 
 const loadTripData = async () => {
-  const tripId = 18; // 예시로 1번 여행 정보를 가져옴
-  try {
-    const response = await axios.get(`http://localhost:8080/trip/${tripId}`);
-    const { trip: tripData, plans: planData, invites: inviteData } = response.data;
-    trip.value = tripData;
-    plans.value = planData;
-    invites.value = inviteData;
-    console.log(tripData);
-    console.log(planData);
-    console.log(inviteData);
-    editedText.value[0] = trip.value.title;
-    editedText.value[1] = trip.value.place;
-    editedText.value[2] = trip.value.startDate + " ~ " + trip.value.endDate;
-    date.value = new Date(trip.value.startDate).toISOString().split('T')[0];
-  } catch (error) {
-    console.error('Error loading trip:', error);
-  }
+    const tripId = 18; // 예시로 1번 여행 정보를 가져옴
+    try {
+        const response = await axios.get(`http://localhost:8080/trip/${tripId}`);
+        const { trip: tripData, plans: planData, invites: inviteData } = response.data;
+        trip.value = tripData;
+        plans.value = planData;
+        invites.value = inviteData;
+        console.log(tripData);
+        console.log(planData);
+        console.log(inviteData);
+        editedText.value[0] = trip.value.title;
+        editedText.value[1] = trip.value.place;
+        editedText.value[2] = trip.value.startDate + " ~ " + trip.value.endDate;
+        date.value = new Date(trip.value.startDate).toISOString().split('T')[0];
+    } catch (error) {
+        console.error('Error loading trip:', error);
+    }
 };
 
 onMounted(loadTripData);
@@ -312,6 +319,10 @@ getPlaces();
 
 watch(selectedPlace, updateMarkerList);
 watch(selectedPlace, savePlacesForDate);
+watch(editedText, (newValue) => {
+  // newValue는 변경된 editedText 배열입니다.
+  // newValue[0]의 값이 <h1> 요소에 표시됩니다.
+});
 </script>
 
 <style>
