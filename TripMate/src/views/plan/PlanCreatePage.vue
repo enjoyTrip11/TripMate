@@ -245,6 +245,7 @@ getPlaces();
 // fetchPlaces();
 
 watch(selectedPlace, updateMarkerList);
+watch(selectedPlace, savePlacesForDate);
 </script>
 
 <style>
