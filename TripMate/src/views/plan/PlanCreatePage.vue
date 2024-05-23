@@ -97,7 +97,7 @@
                 <v-row>
                     <v-col cols="12">
                         <v-btn class="ma-2" :icon="icon" color="secondary" style="width: 60px; height: 60px;"
-                            @click="openConfirmEditDialog(index)"></v-btn>
+                            @click="handleButtonClick(index)"></v-btn>
                     </v-col>
                 </v-row>
             </v-col>
@@ -157,7 +157,7 @@ const isListVisible = ref(true);
 const date = ref();
 
 const showIcons = ref(false);
-const icons = ref(['mdi-format-title', 'mdi-map-marker', 'mdi-calendar', 'mdi-account-group']);
+const icons = ref(['mdi-format-title', 'mdi-map-marker', 'mdi-calendar', 'mdi-account-group', 'mdi-content-save']);
 
 const editing = ref(-1); // 현재 편집 중인 버튼의 인덱스
 const editedText = ref(['', '', '', '']); // 편집된 텍스트 배열
@@ -165,6 +165,19 @@ const confirmEditDialog = ref(false); // 확인/편집 다이얼로그 표시 �
 
 const toggleIcons = () => {
     showIcons.value = !showIcons.value;
+};
+
+const handleButtonClick = (index) => {
+  if (index < 4) {
+    openConfirmEditDialog(index);
+  } else if(index == 4) {
+    otherFunction();
+  }
+};
+
+// 다른 함수 정의
+const otherFunction = () => {
+  console.log('다른 함수 호출!');
 };
 
 const openConfirmEditDialog = (index) => {
