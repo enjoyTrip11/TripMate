@@ -1,18 +1,18 @@
 <template>
-    <v-container fluid>
+    <v-container fluid class="container">
         <!-- 계획 제목 -->
         <v-row justify="center" class="mb-4">
             <v-col cols="auto">
-                <h1 class="display-1">{{ editedText[0] }}</h1>
+                <h1 class="display-1">날씨 정보</h1>
                 <hr>
             </v-col>
         </v-row>
-        <v-row justify="center" class="mb-0">
+        <v-row  class="mb-0">
             <CategoryBar @updateSearchFilter="handleSearchFilterUpdate" />
         </v-row>
-        <v-row class="ga-5">
+        <v-row class="plan-container mt-0">
             <div class="list-wrapper" :class="{ 'closed': !isListVisible }">
-                <v-infinite-scroll :height="600" :onLoad="load" @update="updateList">
+                <v-infinite-scroll :height="700" :onLoad="load" @update="updateList">
                     <template v-for="(place, index) in places" :key="place.id">
                         <div class="place-item" @click="selectPlace(place)">
                             <div class="place-details">
@@ -26,13 +26,13 @@
             </div>
 
             <v-col class="map">
-                <KakaoMap :lat="33.452" :lng="126.573">
+                <KakaoMap class="kakaoMap" ref="mapRef" :lat="33.452" :lng="126.573">
                     <KakaoMapMarkerPolyline :markerList="markerList" :showMarkerOrder="true" strokeColor="#C74C5E"
-                        :strokeOpacity="1" strokeStyle="shortdot" />
+                        :strokeOpacity="1" strokeStyle="shortdot"  />
                 </KakaoMap>
             </v-col>
 
-            <v-col class="d-flex flex-column ga-5">
+            <v-col class="list mt-4 mb-4 mr-5">
                 <div class="d-flex justify-space-between align-center mb-4">
                     <v-btn icon @click="prevDate">
                         <v-icon>mdi-chevron-left</v-icon>
@@ -50,7 +50,7 @@
                                 <v-card-title>{{ place.title }}</v-card-title>
                                 <v-card-text>
                                     <div>
-                                        <v-img :src="place.image" width="50" height="50"></v-img>
+                                        <!-- <v-img :src="place.image" width="50" height="50"></v-img> -->
                                         <span>{{ place.addr1 }}</span>
                                     </div>
                                     <div>{{ place.description }}</div>
@@ -102,6 +102,11 @@
                 </v-row>
             </v-col>
         </v-row>
+
+        <!-- 범위 설정 버튼 -->
+        <v-row class="bound-btn">
+                    <v-btn class="ma-2" color="primary" style="width: 100px;" @click="setBounds">범위 재설정</v-btn>
+            </v-row>
     </v-container>
 </template>
 
@@ -189,6 +194,8 @@ const places = ref([]);
 const loading = ref(true); // 로딩 상태를 나타내는 변수
 const isListVisible = ref(true);
 
+const mapRef = ref(null);
+
 // 날짜 관련 변수
 const date = ref();
 
@@ -210,6 +217,8 @@ const handleButtonClick = (index) => {
         saveFunction();
     }
 };
+
+const userId = 18; // TODO : 바꿔야 함
 
 const saveFunction = () => {
     // 선택한 날짜 범위 파싱
@@ -320,13 +329,29 @@ const deletePlace = (place: any) => {
     }
 };
 
-const selectPlace = (place: any) => {
+const selectPlace = (place) => {
     if (!selectedPlace.value.includes(place)) {
         selectedPlace.value.push(place);
         updateMarkerList();
         savePlacesForDate();
+
+        // 선택한 장소의 위도와 경도를 이용하여 LatLng 객체 생성
+        const position = new kakao.maps.LatLng(place.latitude, place.longitude);
+
+        // 생성된 LatLng 객체를 중심으로 지도를 이동시킴
+        mapRef.value.setCenter(position);
     }
 };
+
+const handleMarkerClick = (marker) => {
+    // 클릭한 마커의 위도와 경도 정보를 가져옴
+    const position = new kakao.maps.LatLng(marker.lat, marker.lng);
+    
+    // 마커를 클릭했을 때 지도를 이동시킴
+    mapRef.value.setCenter(position);
+};
+
+
 
 const savePlacesForDate = () => {
     placesByDate.value[date.value] = [...selectedPlace.value];
@@ -346,11 +371,31 @@ const updateMarkerList = () => {
         orderBottomMargin: '37px',
         order: index === 0 ? '출발' : index
     }));
+    return markerList.value;
+};
+
+const setBounds = () => {
+    console.log("Call SetBounds......")
+    if (!mapRef.value || markerList.value.length === 0) return;
+
+    const bounds = new kakao.maps.LatLngBounds();
+    markerList.value.forEach(marker => {
+        bounds.extend(new kakao.maps.LatLng(marker.lat, marker.lng));
+    });
+
+    mapRef.value.setBounds(bounds);
+
+    // 마커가 찍힐 때마다 해당 위치 주변으로 지도 이동
+    if (markerList.value.length === 1) {
+        mapRef.value.setCenter(new kakao.maps.LatLng(markerList.value[0].lat, markerList.value[0].lng));
+    }
+    console.log("New Bounds:::::", bounds)
 };
 
 const markerList = ref<KakaoMapMarkerListItem[]>([]);
 
 const searchFilter = ref({
+    userId: 1,
     keyword: "",
     sidoCode: 36,
     contentTypeId: 14,
@@ -433,20 +478,13 @@ watch(editedText, (newValue) => { });
 }
 
 .list-wrapper {
-  overflow: hidden;
-  padding: 0;
-  display: flex;
+    overflow: hidden;
+    padding: 0;
+    display: flex;
 }
 
 .list-wrapper.closed {
-  display: none;
-}
-
-.map-wrapper {
-  flex-grow: 1;
-  position: relative;
-  height: 600px;
-  width: 100%;
+    display: none;
 }
 
 .dragArea {
@@ -487,4 +525,48 @@ watch(editedText, (newValue) => { });
     left: 43%;
     width: 100%;
 }
+
+.plan-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%; 
+    overflow: hidden; /* 필요에 따라 스크롤이 필요한 경우 사용 */
+    margin-top: 0;
+}
+
+.list-wrapper {
+    overflow-y: auto; /* 내용이 넘치는 경우 스크롤이 가능하도록 설정 */
+}
+
+.map {
+    display: flex;
+    flex-grow: 1;
+    overflow-y: auto; /* 내용이 넘치는 경우 스크롤이 가능하도록 설정 */
+    padding: 0 !important;
+}
+
+.kakaoMap {
+    height: 700px !important;
+}
+
+.list {
+    /* flex-grow: 1; 남은 공간을 모두 차지하도록 설정 */
+    overflow-y: auto; /* 내용이 넘치는 경우 스크롤이 가능하도록 설정 */
+    padding: 0 !important;
+    max-width: 300px;
+    max-height: 700px;
+}
+
+.place-details {
+    padding: 5px;
+    margin: 5px;
+}
+
+.bound-btn {
+    position: fixed;
+    bottom : 40px;
+    left: 950px;
+    z-index: 1;
+}
 </style>
+

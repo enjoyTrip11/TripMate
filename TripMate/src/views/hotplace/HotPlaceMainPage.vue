@@ -146,7 +146,7 @@ import { loadMyHotPlace, loadAllHotPlace } from "@/api/hotplace";
 import MyPlaceCard from '@/components/hotplace/MyPlaceCard.vue';
 import AllPlaceCard from '@/components/hotplace/AllPlaceCard.vue';
 
-const userId = 1; // TODO: 현재 userId로 바꾸기
+const userId = 18; // TODO: 현재 userId로 바꾸기
 const myPlace = ref([]);
 const allPlace = ref([]);
 const isMyPlaceLoaded = ref(false);

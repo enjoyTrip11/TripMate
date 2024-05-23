@@ -131,7 +131,9 @@ const fetchWeather = async (city, selectedDate, selectedPeriod) => {
 
     // const API_KEY = '8430f2617a70526220926352e6e5b931'; // 여기에 OpenWeather API 키를 입력하세요
 
-    const API_KEY = '1f09897afa096adff2de1a848b199eaa';
+    // const API_KEY = '1f09897afa096adff2de1a848b199eaa';
+    const API_KEY = '5bdccf9869de90e5f15337311bbdf4b9';
+    
     // const response = await axios.get(`https://api.openweathermap.org/data/3.0/onecall/day_summary?lat=${city.lat}&lon=${city.lon}&date=${selectedDate}&tz=+09:00&appid=${API_KEY}`);
     const response = await axios.get(`https://api.openweathermap.org/data/3.0/onecall/timemachine?lat=${city.lat}&lon=${city.lon}&dt=${unixTimestamp}&tz=+09:00&appid=${API_KEY}&lang=kr&units=metric`);
     console.log(response.data.data);

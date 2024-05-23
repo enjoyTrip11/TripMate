@@ -194,7 +194,7 @@ const replyingTo = ref(null);
 const editingComment = ref(null);
 const editComment = ref('');
 
-const curUserId = 1; // TODO : 접속자 ID로 바꿔주어야 함
+const curUserId = 18; // TODO : 접속자 ID로 바꿔주어야 함
 const similarPosts = [
     { title: '유사 게시글 제목 1', author: '작성자1' },
     { title: '유사 게시글 제목 2', author: '작성자2' },

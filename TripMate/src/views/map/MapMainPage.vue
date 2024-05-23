@@ -31,7 +31,7 @@
   import { ref } from 'vue';
   import { loadPlaces } from '@/api/place';
   
-  const userId = 1; // TODO: 아이디 바꾸기 
+  const userId = 18; // TODO: 아이디 바꾸기 
   const places = ref([]);
   const loading = ref(true); // 로딩 상태를 나타내는 변수
   

@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>route
+    <v-container fluid>
         <div class="wrapper">
             <v-card class="mx-auto custom-card" color="white" d-flex justify-center align-center>
                 <v-img height="600" color="#E0F4FF" cover class="img-center">

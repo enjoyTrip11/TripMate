@@ -1,4 +1,5 @@
 // store/index.js
+import router from '@/router';
 import { createStore } from 'vuex';
 
 const store = createStore({
@@ -24,6 +25,7 @@ const store = createStore({
       localStorage.removeItem('accessToken');
       commit('SET_ACCESS_TOKEN', null);
       commit('SET_AUTH', false);
+      router.push({name: 'home'});
     },
   },
 });

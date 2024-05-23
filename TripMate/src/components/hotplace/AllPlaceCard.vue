@@ -11,15 +11,14 @@
     
     <!-- 찜버튼을 이미지의 오른쪽 상단에 배치 -->
     <v-btn icon @click="toggleFavorite(locationId)" class="favorite-button">
-      <v-icon :color="isFavorite? 'pink' : 'grey'">mdi-heart</v-icon>{{ hitCount }}
+      <v-icon :color="isFavorite ? 'pink' : 'grey'">mdi-heart</v-icon>{{ hitCount }}
     </v-btn>
   </v-card>
 </template>
 
 <script setup>
-import { ref } from 'vue'; // Import Vue reactivity package
+import { ref, watchEffect } from 'vue';
 import { deleteHotPlace, updateHotPlace } from "@/api/hotplace";
-import { useRouter } from 'vue-router';
 
 // Define props
 const props = defineProps({
@@ -32,51 +31,55 @@ const props = defineProps({
   isFavorite: Boolean,
 });
 
-const router = useRouter();
-
 // State to manage favorite status
 const isFavorite = ref(props.isFavorite);
 
+// Update isFavorite when props change
+watchEffect(() => {
+  isFavorite.value = props.isFavorite;
+});
+
 const toggleFavorite = (locationId) => {
   if (isFavorite.value) {
-    removeHotPlace(locationId)
+    removeHotPlace(locationId);
   } else {
-    registHotPlace(locationId)
+    registHotPlace(locationId);
   }
 };
 
 function removeHotPlace(locationId) {
-  console.log("Delete HotPlace........userId:", props.userId, ", locationId:", locationId)
+  console.log("Delete HotPlace........userId:", props.userId, ", locationId:", locationId);
 
   deleteHotPlace(
     locationId,
     props.userId,
     () => {
-      console.log("Success!......")
+      console.log("Success!......");
+      isFavorite.value = false; // Update local state
       window.location.reload()
     }, 
     ({ error }) => {
       console.log("Fail to Delete MyHotPlace.....", error);
     }
-  )
+  );
 }
 
 function registHotPlace(locationId) {
-  console.log("Regist HotPlace........userId:", props.userId, ", locationId:", locationId)
+  console.log("Regist HotPlace........userId:", props.userId, ", locationId:", locationId);
 
   updateHotPlace(
     locationId,
     props.userId,
     ({ data }) => {
-      console.log("Success!......data:", data)
+      console.log("Success!......data:", data);
+      isFavorite.value = true; // Update local state
       window.location.reload()
     }, 
     ({ error }) => {
       console.log("Fail to Regist MyHotPlace.....", error);
     }
-  )
+  );
 }
-
 </script>
 
 <style scoped>
