@@ -11,7 +11,7 @@
     
     <!-- 찜버튼을 이미지의 오른쪽 상단에 배치 -->
     <v-btn icon @click="toggleFavorite(locationId)" class="favorite-button">
-      <v-icon :color="isFavorited ? 'pink' : 'grey'">mdi-heart</v-icon>{{ hitCount }}
+      <v-icon :color="isFavorite? 'pink' : 'grey'">mdi-heart</v-icon>{{ hitCount }}
     </v-btn>
   </v-card>
 </template>
@@ -29,24 +29,20 @@ const props = defineProps({
   imageURL: String,
   title: String,
   addr1: String,
-  isFavorited: Boolean,
+  isFavorite: Boolean,
 });
 
 const router = useRouter();
 
 // State to manage favorite status
-const isFavorited = ref(props.isFavorited);
+const isFavorite = ref(props.isFavorite);
 
 const toggleFavorite = (locationId) => {
-  if (isFavorited.value) {
+  if (isFavorite.value) {
     removeHotPlace(locationId)
   } else {
     registHotPlace(locationId)
   }
-  // window.location.reload()
-  // isFavorited.value = !isFavorited.value;
-  // Emit an event to the parent component if needed
-  // emit('toggle-favorite', isFavorited.value);
 };
 
 function removeHotPlace(locationId) {

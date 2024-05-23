@@ -2,8 +2,8 @@ import { localAxios } from "@/utils/http-commons";
 
 const local = localAxios()
 
-async function loadAllHotPlace(success, fail) {
-    local.get('hotplace/all')
+async function loadAllHotPlace(userId, success, fail) {
+    local.get(`hotplace/all?userId=${userId}`)
         .then(success)
         .catch(fail)
 }

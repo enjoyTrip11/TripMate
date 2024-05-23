@@ -95,7 +95,7 @@
                       :title="item.raw.place?.title || '안나오는중'"
                       :addr1="item.raw.place?.addr1 || '안나오는중'"
                       :addr2="item.raw.place?.addr2 || '안나오는중'"
-                      :is-favorited="isFavorited(item.raw.place?.locationId)"
+                      :is-favorite="item.raw.place?.isFavorite"
                       class="custom-place-card"
                     />
                   </v-col>
@@ -174,6 +174,7 @@ async function getMyHotPlace() {
 async function getAllHotPlace() {
   console.log("Load All HotPlace...........");
   await loadAllHotPlace(
+    userId,
     ({ data }) => {
       console.log("Success!.....HotPlace:", data);
       allPlace.value = data;
@@ -184,12 +185,6 @@ async function getAllHotPlace() {
       isAllPlaceLoaded.value = true; // 오류가 발생해도 로딩 플래그는 true로 설정
     }
   );
-}
-
-function isFavorited(locationId) {
-  if (!myPlace.value) return
-  console.log("Favorite 계산 수행 중..")
-  return myPlace.value.some(item => item.place.locationId === locationId);
 }
 
 onMounted(async () => {
