@@ -333,9 +333,9 @@ const updateList = () => {
 }
 
 .modal-content img {
-  position: relative;
-  width: 100%;
-  height: auto;
+  width: 460px; /* 이미지 크기를 고정 */
+  height: 280px; /* 이미지 크기를 고정 */
+  object-fit: cover; /* 이미지를 확대/축소해서 부모 요소의 사이즈에 맞게 보여줌 */
   margin-bottom: 10px;
 }
 
