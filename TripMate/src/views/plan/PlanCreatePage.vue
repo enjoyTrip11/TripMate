@@ -112,7 +112,9 @@ import axios from 'axios';
 import { KakaoMap, KakaoMapMarkerPolyline, type KakaoMapMarkerListItem } from 'vue3-kakao-maps';
 import draggable from 'vuedraggable';
 import { loadPlaces } from '@/api/place';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const image = {
     imageSrc: 'https://vue3-kakao-maps.netlify.app/images/redMarker.png',
     imageWidth: 48,
@@ -122,6 +124,18 @@ const image = {
 const trip = ref(null);
 const plans = ref([]);
 const invites = ref([]);
+
+const findPlaceById = async (locationId) => {
+    try {
+        // 서버에 장소 정보를 요청하는 API 호출
+        const response = await axios.get(`http://localhost:8080/place/${locationId}`);
+        const place = response.data;
+        return place;
+    } catch (error) {
+        console.error('장소 정보를 가져오는 데 실패했습니다:', error);
+        return null;
+    }
+};
 
 const loadTripData = async () => {
     const tripId = 18; // 예시로 1번 여행 정보를 가져옴
@@ -138,6 +152,24 @@ const loadTripData = async () => {
         editedText.value[1] = trip.value.place;
         editedText.value[2] = trip.value.startDate + " ~ " + trip.value.endDate;
         date.value = new Date(trip.value.startDate).toISOString().split('T')[0];
+        planData.forEach(planSaveDto => {
+            const { date, locationId, planOrder } = planSaveDto;
+            // 해당 날짜가 이미 placesByDate에 있는지 확인
+            if (!placesByDate.value[date]) {
+                // 해당 날짜가 없으면 빈 배열로 초기화
+                placesByDate.value[date] = [];
+            }
+            const place = findPlaceById(locationId);
+            findPlaceById(locationId).then(place => {
+                if (place) {
+                    placesByDate.value[date][planOrder] = place;
+                } else {
+                    console.log(`Place with locationId ${locationId} not found.`);
+                }
+            }).catch(error => {
+                console.error('Error retrieving place:', error);
+            });
+        });
     } catch (error) {
         console.error('Error loading trip:', error);
     }
@@ -220,14 +252,15 @@ const saveFunction = () => {
         inviteSaveDtoList,
         planSaveDtoList
     })
-    .then(response => {
-        // 요청 성공 시 처리할 작업
-        console.log('여행 생성 성공');
-    })
-    .catch(error => {
-        // 요청 실패 시 처리할 작업
-        console.error('서버 에러:', error);
-    });
+        .then(response => {
+            // 요청 성공 시 처리할 작업
+            console.log('여행 생성 성공');
+            router.push('/planList');
+        })
+        .catch(error => {
+            // 요청 실패 시 처리할 작업
+            console.error('서버 에러:', error);
+        });
 };
 
 const openConfirmEditDialog = (index) => {
@@ -330,7 +363,6 @@ const getPlaces = () => {
             places.value = data;
             loading.value = false; // 데이터 로드가 완료되면 로딩 상태 변경
             console.log("Processed Places Data:", places.value);
-
         },
         (err) => {
             console.log("Fail to Load Places........", err);
@@ -383,10 +415,7 @@ getPlaces();
 
 watch(selectedPlace, updateMarkerList);
 watch(selectedPlace, savePlacesForDate);
-watch(editedText, (newValue) => {
-    // newValue는 변경된 editedText 배열입니다.
-    // newValue[0]의 값이 <h1> 요소에 표시됩니다.
-});
+watch(editedText, (newValue) => { });
 </script>
 
 <style>
