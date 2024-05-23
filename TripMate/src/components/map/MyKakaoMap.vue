@@ -24,25 +24,21 @@
         <v-btn class="toggle-button" @click="toggleListVisibility">
           {{ isListVisible ? '목록 닫기' : '목록 열기' }}
         </v-btn>
-        <v-progress-circular
-          v-if="isLoading"
-          indeterminate
-          color="primary"
-        ></v-progress-circular>
-        <KakaoMap v-else-if="isMapVisible" :center="center" :scrollwheel="false" :draggable="true" width="100%" height="600px">
+        <KakaoMap v-if="isMapVisible" :lat="center.lat" :lng="center.lng" :scrollwheel="false" :draggable="true" width="100%" height="600px">
           <KakaoMapMarker
             v-for="place in places" 
             :key="place.id" 
             :lat="place.latitude" 
             :lng="place.longitude"
           >
-            <div>{{ place.title }}</div>
+            <div>{{ place.name }}</div>
           </KakaoMapMarker>
         </KakaoMap>
       </div>
     </div>
   </v-container>
 </template>
+
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
@@ -57,7 +53,6 @@ const props = defineProps({
 
 const isListVisible = ref(true);
 const isMapVisible = ref(false);
-const isLoading = ref(true); // 로딩 상태 추가
 const center = ref({
   lat: 37.501328668708,
   lng: 127.03953821497
@@ -75,14 +70,12 @@ watch(
     console.log('Received places:', newPlaces);
     if (newPlaces && newPlaces.length > 0) {
       center.value = {
-        lat: newPlaces[0].latitude || 37.501328668708, // 기본 위치로 대체
-        lng: newPlaces[0].longitude || 127.03953821497 // 기본 위치로 대체
+        lat: newPlaces[0].latitude,
+        lng: newPlaces[0].longitude
       };
       isMapVisible.value = true;
-      isLoading.value = false; // 로딩 완료
     } else {
       isMapVisible.value = false;
-      isLoading.value = false; // 로딩 완료
     }
   },
   { immediate: true, deep: true }
@@ -90,20 +83,7 @@ watch(
 
 onMounted(() => {
   console.log('Props places in MyKakaoMap:', props.places);
-  // 카카오맵 API가 로드되었을 때 로딩 상태를 false로 설정
-  window.kakao && window.kakao.maps ? isLoading.value = false : loadKakaoMapApi();
 });
-
-function loadKakaoMapApi() {
-  const script = document.createElement('script');
-  script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_MAP_API_KEY&autoload=false`;
-  script.onload = () => {
-    window.kakao.maps.load(() => {
-      isLoading.value = false;
-    });
-  };
-  document.head.appendChild(script);
-}
 
 // Infinite Scroll 관련 로직
 const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
@@ -116,6 +96,19 @@ async function api() {
     }, 1000);
   });
 }
+
+// 좋아요 버튼 토글 함수
+const toggleFavorite = (place) => {
+  place.isFavorite = !place.isFavorite;
+};
+
+// 클릭 시 해당 위치로 지도 이동
+const moveToMarker = (place) => {
+  center.value = {
+    lat: place.latitude,
+    lng: place.longitude
+  };
+};
 
 async function load({ done }) {
   // API 호출
@@ -132,19 +125,6 @@ async function load({ done }) {
 
 const updateList = () => {
   console.log('List updated!');
-};
-
-// 좋아요 버튼 토글 함수
-const toggleFavorite = (place) => {
-  place.isFavorite = !place.isFavorite;
-};
-
-// 클릭 시 해당 위치로 지도 이동
-const moveToMarker = (place) => {
-  center.value = {
-    lat: place.latitude,
-    lng: place.longitude
-  };
 };
 </script>
 
@@ -170,32 +150,29 @@ const moveToMarker = (place) => {
 
 .list-wrapper {
   overflow: hidden;
+  /* width: 100%; */
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  background-color: #f5f5f5; /* 배경색 통일 */
+  display: flex; /* 리스트 내부의 요소들을 가로 정렬하기 위해 추가 */
 }
 
 .list-wrapper.closed {
+  /* width: 10px; */
   display: none;
 }
 
 .map-wrapper {
   position: relative;
   height: 600px;
-  width: calc(100% - 300px);
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 1440px;
 }
 
 .toggle-button {
   position: absolute;
   top: 10px;
   left: 10px;
+  align-self: flex-end; /* 목록 오른쪽 끝에 배치 */
+  padding: 0;
+  margin: 0;
   z-index: 99;
 }
 
