@@ -230,7 +230,7 @@ export default {
             const endDate = dates[1];
             // 여행하기 버튼을 누르면 실행되는 메소드
             const tripSaveDto = {
-                writer: 18, // 작성자의 ID
+                writer: 0, // 작성자의 ID
                 title: this.title, // 제목 입력값
                 place: this.place, // 여행지 입력값
                 startDate: startDate, // 선택한 시작 날짜
@@ -243,9 +243,15 @@ export default {
                 state: "PENDING" // 초대 상태 초기값 설정
             }));
 
+            const accessToken = localStorage.getItem('accessToken');
+
             axios.post('http://localhost:8080/trip', {
                 tripSaveDto,
                 inviteSaveDtoList
+            }, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}` // 토큰을 Bearer 스키마에 넣어줌
+                }
             })
             .then(response => {
                 // 요청 성공 시 처리할 작업

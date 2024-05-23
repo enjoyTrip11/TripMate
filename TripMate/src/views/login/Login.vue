@@ -64,7 +64,8 @@ export default {
     async submitForm() {
       try {
         const response = await axios.post('http://localhost:8080/user/login', this.formData);
-        const accessToken = response.data.accessToken;
+        const accessToken = response.data.tokenDto.accessToken;
+        console.log(accessToken);
         this.store.dispatch('saveAccessToken', accessToken);
         console.log('로그인 성공:', response.data);
         this.router.push('/'); // 로그인 성공 시 메인페이지로 이동
