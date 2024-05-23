@@ -1,74 +1,37 @@
 <template>
-  <v-container fluid class="all-container">
-    <div class="container">
-      <h2>실시간 전국 날씨</h2>
-      <div class="buttons">
-        <div v-for="date in weekDates" :key="date" @click="selectDate(date)" :class="{ 'selected': selectedDate === date }" class="date-button">
-          <span v-html="formatDate(date)" :class="{ 'selected': selectedDate === date }"></span>
-          <hr :class="{ 'selected': selectedDate === date }">
-        </div>
+  <v-container fluid class="container">
+    <h2>실시간 전국 날씨</h2>
+    <div class="buttons">
+      <div v-for="date in weekDates" :key="date" @click="selectDate(date)" :class="{ 'selected': selectedDate === date }" class="date-button">
+        <span v-html="formatDate(date)" :class="{ 'selected': selectedDate === date }"></span>
+        <hr :class="{ 'selected': selectedDate === date }">
       </div>
-      <div class="toggle-buttons">
+    </div>
+    <div class="toggle-buttons">
         <v-btn :class="{ 'selected': selectedPeriod === 'AM' }" @click="selectPeriod('AM')">오전</v-btn>
         <v-btn :class="{ 'selected': selectedPeriod === 'PM' }" @click="selectPeriod('PM')">오후</v-btn>
       </div>
-      <v-card class="map-card">
-        <div class="weather-container">
-          <div v-if="!loading">
-            <div v-for="city in cities" :key="city.name" class="weather-info" :style="city.position">
-              <div v-if="city.weatherData ">
-                <img :src="city.weatherIcon" alt="Weather Icon" class="weather-icon" @click="selectCity(city)" />
-                <div class="temperature">{{ city.name }} {{ city.weatherData.temp }}°C</div>
-              </div>
-              <div v-else>
-                <p>날씨 정보를 불러오는 중...</p>
-              </div>
+    <v-card class="map-card">
+      <div class="weather-container">
+        <div v-if="!loading">
+          <div v-for="city in cities" :key="city.name" class="weather-info" :style="city.position">
+            <div v-if="city.weatherData ">
+              <img :src="city.weatherIcon" alt="Weather Icon" class="weather-icon" />
+              <div class="temperature">{{ city.name }} {{ city.weatherData.temp }}°C</div>
+            </div>
+            <div v-else>
+              <p>날씨 정보를 불러오는 중...</p>
             </div>
           </div>
         </div>
-      </v-card>
-    </div>
-    <div class="detail-container">
-      <h2>상세 날씨</h2>
-      <v-divider></v-divider>
-      <div v-if="!scCity">
-        <p class="mt-5">선택된 지역이 없어요!</p>
       </div>
-      <div v-else>
-        <h2 class="city">{{ selectedCityInfo.name }}</h2>
-        
-        <div class="img-temp">
-          <img :src="selectedCityInfo.weatherIcon" class="detail-weather-icon">
-          <h2 class="temp">{{ selectedCityInfo.weatherData.temp }}°C</h2>
-        </div>
-        <h2 class="hum">일자: {{  selectedDate }}</h2>
-        <h2 class="describ">날씨 상세: {{ selectedCityInfo.weatherData.weatherDescrib }}</h2>
-        <h2 class="hum">습도: {{ selectedCityInfo.weatherData.humidity }}</h2>
-        <h2 class="wind">풍속: {{ selectedCityInfo.weatherData.wind_speed }}</h2>
-
-        <router-link :to="{name:'map'}">
-        <v-btn class="city-info-button" elevation="10">
-          {{ selectedCityInfo.name }} 여행지 정보 찾기!
-      </v-btn>
-    </router-link>
-      </div>
-    </div>
+    </v-card>
   </v-container>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
-
-const scCity = ref(false); 
-
-const selectedCityInfo = ref(null); // selectedCity 변수를 selectedCityInfo로 변경
-
-function selectCity(city) {
-  console.log("Select!!!!! " , city)
-  selectedCityInfo.value = city; // 변수명 변경
-  scCity.value= true;
-}
 
 const getWeekDates = () => {
   const today = new Date();
@@ -129,9 +92,8 @@ const fetchWeather = async (city, selectedDate, selectedPeriod) => {
     const unixTimestamp = Math.floor(utcDate.getTime() / 1000);
 
 
-    // const API_KEY = '8430f2617a70526220926352e6e5b931'; // 여기에 OpenWeather API 키를 입력하세요
+    const API_KEY = '8430f2617a70526220926352e6e5b931'; // 여기에 OpenWeather API 키를 입력하세요
 
-    const API_KEY = '1f09897afa096adff2de1a848b199eaa';
     // const response = await axios.get(`https://api.openweathermap.org/data/3.0/onecall/day_summary?lat=${city.lat}&lon=${city.lon}&date=${selectedDate}&tz=+09:00&appid=${API_KEY}`);
     const response = await axios.get(`https://api.openweathermap.org/data/3.0/onecall/timemachine?lat=${city.lat}&lon=${city.lon}&dt=${unixTimestamp}&tz=+09:00&appid=${API_KEY}&lang=kr&units=metric`);
     console.log(response.data.data);
@@ -184,7 +146,6 @@ const loading = ref(true); // 로딩 상태 추가
 onMounted(async () => {
   try {
     await Promise.all(cities.value.map(city => fetchWeather(city, selectedDate.value, selectedPeriod.value)));
-
     console.log("End Load..................")
   } catch (error) {
     console.error('Error fetching weather data:', error);
@@ -195,20 +156,11 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.all-container {
-  display: flex;
-  width: 100%;
-}
-
 .container {
   margin-left: 20px; /* 왼쪽 마진 설정 */
-  width: 600px;
-}
-
-.detail-container {
-  margin-left: 60px; /* 왼쪽 마진 설정 */
   width: 500px;
 }
+
 .container > * {
   margin-left: 20px; /* 하위 요소의 왼쪽 마진 설정 */
 }
@@ -273,9 +225,8 @@ hr {
 .toggle-buttons {
   display: flex;
   position: absolute; /* 절대 위치로 설정하여 부모 요소(map-card)를 기준으로 배치합니다. */
-  bottom: 50px; /* 아래쪽 여백 설정 */
-  left: 485px; /* 오른쪽 여백 설정 */
-  z-index: 1;
+  bottom: 40px; /* 아래쪽 여백 설정 */
+  left: 350px; /* 오른쪽 여백 설정 */
 }
 
 .toggle-buttons .v-btn {
@@ -320,51 +271,4 @@ hr {
   /* font-weight: bold;  */
   margin-top: -10px;
 }
-
-.detail-weather-icon {
-  width: 180px;
-  height: 180px;;
-}
-
-.img-temp {
-  display: flex;
-  flex-direction:  row;
-  align-items: center;
-  margin-left: -40px;
-}
-
-.temp {
-  margin-left: -30px;
-  margin-top: 10px;
-  font-size: 80px;
-} 
-
-.city {
-  margin-top: 80px;
-  margin-bottom: -30px;
-  font-size: 40px;
-} 
-.wind .hum .describ {
-  font-weight: normal;
-}
-.hum {
-  font-weight: normal;
-}
-
-.describ {
-  font-weight: normal;
-}
-
-.city-info-button {
-  margin-top: 70px;
-  border-radius: 30px; /* 둥근 타원형 모양으로 만듭니다. */
-  /* box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2); 그림자를 추가합니다. */
-  background-color: transparent; /* 배경색을 없앱니다. */
-  /* color: rgb(0, 153, 255); 버튼의 텍스트 색상을 지정합니다. */
-  font-weight: bold; /* 버튼 텍스트의 글꼴 두껍게 설정합니다. */
-  width: 400px;
-  height: 60px;
-  font-size : 25px
-}
 </style>
-
