@@ -263,6 +263,7 @@ const updateList = () => {
   align-items: center;
   position: relative;
   width: 100%;
+  height: 100%;
   max-width: none;
   margin: 0;
   padding: 0;

@@ -78,7 +78,7 @@
                             </v-col>
                         </v-row>
                         <div class="d-flex justify-center">
-                            <router-link :to="{ name: 'planCreate', params: { tripId : 0} }">
+                            <router-link :to="{ name: 'planCreate', params: { planId : 0} }">
                                 <v-btn depressed width="150px" @click="handleTravel">여행하기</v-btn>
                             </router-link>
                         </div>
@@ -116,9 +116,11 @@
                                                 </div>
                                             </v-card-title>
                                             <div class="align-self-center card-detail-button">
+                                                <router-link :to="{ name: 'planCreate', params: { planId : item.id} }">
                                                 <v-btn v-for="(icon, index) in icons" :key="index"
                                                     :class="{ 'show-btns': isHovering }" :color="transparent" :icon="icon"
-                                                    variant="text" @click="navigateToPlanCreate(item.id)"></v-btn>
+                                                    variant="text"></v-btn>
+                                                </router-link>
                                             </div>
                                         </div>
                                     </v-card>
@@ -137,6 +139,9 @@ import DatePickerRange from "@/components/DatePickerRange.vue";
 import axios from 'axios';
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
+
+const router = useRouter()
+
 const selectedDateRange = ref(null)
 export default {
     data() {
@@ -166,9 +171,10 @@ export default {
         handleDateChange(value) {
             selectedDateRange.value = value;
         },
-        navigateToPlanCreate(tripId) {
-            this.$router.push({ path: `/plan/create?tripId=${tripId}` });
-        },
+        // navigateToPlanCreate(tripId) {
+        //     console.log("이거:::::::",tripId)
+        //     router.push({ name:"planCreate", params: {planId : tripId} });
+        // },
         fetchFriends() {
             axios.get('http://localhost:8080/user/list')
                 .then(response => {
@@ -240,7 +246,7 @@ export default {
                     Authorization: `Bearer ${accessToken}` // 토큰을 Bearer 스키마에 넣어줌
                 }
             })
-            .then(response => {
+            .then(() => {
                 // 요청 성공 시 처리할 작업
                 console.log('여행 생성 성공');
             })

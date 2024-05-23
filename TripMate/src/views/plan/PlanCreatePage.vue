@@ -123,8 +123,8 @@ const image = {
     imageHeight: 48
 };
 
-const tripId = route.params.tripId;
-console.log("!!!!!!!!!!!!!!!!!!!!!!", tripId);
+const tripId = route.params.planId;
+console.log("!!!!!!!!!!!!!!!!!!!!!!", route);
 
 const trip = ref(null);
 const plans = ref([]);

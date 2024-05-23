@@ -78,6 +78,7 @@ const router = createRouter({
     },
     {
       path: '/plan/create/:planId',
+      // path: '/plan/create',
       name: 'planCreate',
       component: PlanCreatePage
     },
