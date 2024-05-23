@@ -74,14 +74,12 @@
                                             </v-list-item-content>
                                         </v-list-item>
                                     </template>
-
-
                                 </v-autocomplete>
                             </v-col>
                         </v-row>
                         <div class="d-flex justify-center">
                             <router-link :to="{ name: 'planCreate' }">
-                                <v-btn depressed width="150px">여행하기</v-btn>
+                                <v-btn depressed width="150px" @click="handleTravel">여행하기</v-btn>
                             </router-link>
                         </div>
                     </v-container>
@@ -140,6 +138,8 @@
 <script>
 import DatePickerRange from "@/components/DatePickerRange.vue";
 import axios from 'axios';
+import { ref } from "vue";
+const selectedDateRange = ref(null)
 export default {
     data() {
         const srcs = {
@@ -152,6 +152,7 @@ export default {
 
         return {
             friends: [],
+            selectedFriend: null,
             title: '',
             people: [],
             place: '',
@@ -208,19 +209,52 @@ export default {
 
     methods: {
         handleDateChange(value) {
-            // datepicker 이벤트 처리
+            selectedDateRange.value = value;
         },
         fetchFriends() {
             axios.get('http://localhost:8080/user/list')
                 .then(response => {
                     this.people = response.data.map(friend => ({
                         name: friend.name,
-                        avatar: friend.profile
+                        avatar: friend.profile,
+                        userId: friend.userId
                     }));
                 })
                 .catch(error => {
                     console.error('Error fetching friends:', error);
                 });
+        },
+        handleTravel() {
+            const dates = selectedDateRange.value.split(' ~ ');
+            const startDate = dates[0];
+            const endDate = dates[1];
+            // 여행하기 버튼을 누르면 실행되는 메소드
+            const tripSaveDto = {
+                writer: 18, // 작성자의 ID
+                title: this.title, // 제목 입력값
+                place: this.place, // 여행지 입력값
+                startDate: startDate, // 선택한 시작 날짜
+                endDate: endDate // 선택한 끝 날짜
+            };
+
+            const inviteSaveDtoList = this.friends.map(friend => ({
+                tripId: 0, // 여행 ID는 생성 후에 할당될 것으로 가정하고 0으로 설정
+                receiverId: this.people.find(person => person.name === friend).userId, // 친구 추가한 user의 ID
+                state: "PENDING" // 초대 상태 초기값 설정
+            }));
+
+            axios.post('http://localhost:8080/trip', {
+                tripSaveDto,
+                inviteSaveDtoList
+            })
+            .then(response => {
+                // 요청 성공 시 처리할 작업
+                console.log('여행 생성 성공');
+            })
+            .catch(error => {
+                // 요청 실패 시 처리할 작업
+                console.error('서버 에러:', error);
+            });
         },
 
         remove(item) {
