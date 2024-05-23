@@ -80,7 +80,6 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-btn color="primary" @click="confirmEdit">확인</v-btn>
-                    <v-btn color="primary" @click="editText">편집</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -128,6 +127,10 @@ const loadTripData = async () => {
     console.log(tripData);
     console.log(planData);
     console.log(inviteData);
+    editedText.value[0] = trip.value.title;
+    editedText.value[1] = trip.value.place;
+    editedText.value[2] = trip.value.startDate + " ~ " + trip.value.endDate;
+    date.value = new Date(trip.value.startDate).toISOString().split('T')[0];
   } catch (error) {
     console.error('Error loading trip:', error);
   }
@@ -144,7 +147,7 @@ const loading = ref(true); // 로딩 상태를 나타내는 변수
 const isListVisible = ref(true);
 
 // 날짜 관련 변수
-const date = ref(new Date().toISOString().split('T')[0]);
+const date = ref();
 
 const showIcons = ref(false);
 const icons = ref(['mdi-format-title', 'mdi-map-marker', 'mdi-calendar', 'mdi-account-group']);
@@ -168,20 +171,21 @@ const confirmEdit = () => {
     console.log(`Button ${editing.value}의 텍스트: ${editedText.value[editing.value]}`);
     confirmEditDialog.value = false;
 };
-
-const editText = () => {
-    // 편집 버튼을 누르면 편집 모드로 전환
-    confirmEditDialog.value = false;
-};
 const placesByDate = ref({});
 
 const formatDate = (d) => d.toISOString().split('T')[0];
 
 // 날짜 변경 함수
 const changeDate = (days) => {
+    const startDate = new Date(editedText.value[2].split(' ~ ')[0]);
+    const endDate = new Date(editedText.value[2].split(' ~ ')[1]);
     const newDate = new Date(date.value);
     newDate.setDate(newDate.getDate() + days);
-    date.value = formatDate(newDate);
+
+    // 변경된 날짜가 유효한지 확인
+    if (newDate >= startDate && newDate <= endDate) {
+        date.value = formatDate(newDate);
+    }
 };
 
 const prevDate = () => {
