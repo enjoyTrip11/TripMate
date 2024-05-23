@@ -17,7 +17,7 @@
         <v-btn class="toggle-button" @click="toggleListVisibility">
           {{ isListVisible ? '목록 닫기' : '목록 열기' }}
         </v-btn>
-        <KakaoMap v-if="isMapVisible" :lat="center.lat" :lng="center.lng" :draggable="true" width="100%" height="600px">
+        <KakaoMap v-if="isMapVisible" :lat="center.lat" :lng="center.lng" :scrollwheel="false" :draggable="true" width="100%" height="600px">
           <KakaoMapMarker
             v-for="place in places" 
             :key="place.id" 
