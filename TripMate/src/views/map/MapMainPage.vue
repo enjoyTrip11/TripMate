@@ -18,7 +18,7 @@
           <v-progress-linear indeterminate color="primary"></v-progress-linear>
         </div>
         <div  v-else class="wrapper">
-          <MyKakaoMap class="map" :places="places" />
+          <MyKakaoMap class="map" :places="places" :userId="userId" />
         </div>
       </v-row>
     </v-container>
@@ -31,6 +31,7 @@
   import { ref } from 'vue';
   import { loadPlaces } from '@/api/place';
   
+  const userId = 1; // TODO: 아이디 바꾸기 
   const places = ref([]);
   const loading = ref(true); // 로딩 상태를 나타내는 변수
   

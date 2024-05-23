@@ -78,12 +78,14 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import { KakaoMap, KakaoMapMarker } from 'vue3-kakao-maps';
+import { deleteHotPlace, updateHotPlace } from "@/api/hotplace";
 
 const props = defineProps({
   places: {
     type: Array,
     default: () => []
-  }
+  },
+  userId : Number
 });
 
 const isListVisible = ref(true);
@@ -174,8 +176,44 @@ async function api() {
 
 // 좋아요 버튼 토글 함수
 const toggleFavorite = (place) => {
-  place.isFavorite = !place.isFavorite;
+  if (place.isFavorite) {
+    removeHotPlace(place);
+  } else {
+    registHotPlace(place);
+  }
 };
+
+function removeHotPlace(place) {
+  console.log("Delete HotPlace........userId:", props.userId, ", locationId:", place.locationId)
+
+  deleteHotPlace(
+    place.locationId,
+    props.userId,
+    () => {
+      console.log("Success!......")
+      place.isFavorite = !place.isFavorite;
+    }, 
+    ({ error }) => {
+      console.log("Fail to Delete MyHotPlace.....", error);
+    }
+  )
+}
+
+function registHotPlace(place) {
+  console.log("Regist HotPlace........userId:", props.userId, ", locationId:", place.locationId)
+
+  updateHotPlace(
+    place.locationId,
+    props.userId,
+    ({ data }) => {
+      console.log("Success!......data:", data)
+      place.isFavorite = !place.isFavorite;
+    }, 
+    ({ error }) => {
+      console.log("Fail to Regist MyHotPlace.....", error);
+    }
+  )
+}
 
 // 클릭 시 해당 위치로 지도 이동 및 초기 bounds로 돌아가는 함수
 const moveToMarker = (place) => {
