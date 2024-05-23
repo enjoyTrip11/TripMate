@@ -26,6 +26,15 @@
             </v-col>
 
             <v-col class="d-flex flex-column ga-5">
+                <div class="d-flex justify-space-between align-center mb-4">
+                    <v-btn icon @click="prevDate">
+                        <v-icon>mdi-chevron-left</v-icon>
+                    </v-btn>
+                    <span>{{ date }}</span>
+                    <v-btn icon @click="nextDate">
+                        <v-icon>mdi-chevron-right</v-icon>
+                    </v-btn>
+                </div>
                 <div>
                     <draggable v-model="selectedPlace" class="dragArea">
                         <template #item="{ element: place }">
@@ -74,6 +83,37 @@ const places = ref([]);
 const loading = ref(true); // 로딩 상태를 나타내는 변수
 const isListVisible = ref(true);
 
+// 날짜 관련 변수
+const menu = ref(false);
+const date = ref(new Date().toISOString().split('T')[0]);
+
+const yesterday = new Date();
+yesterday.setDate(yesterday.getDate() - 1);
+const startDate = ref(yesterday.toISOString().split('T')[0]);
+
+const dayAfterTomorrow = new Date();
+dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+const endDate = ref(dayAfterTomorrow.toISOString().split('T')[0]);
+
+const placesByDate = ref({});
+
+const formatDate = (d) => d.toISOString().split('T')[0];
+
+// 날짜 변경 함수
+const changeDate = (days) => {
+    const newDate = new Date(date.value);
+    newDate.setDate(newDate.getDate() + days);
+    date.value = formatDate(newDate);
+};
+
+const prevDate = () => {
+    changeDate(-1);
+};
+
+const nextDate = () => {
+    changeDate(1);
+};
+
 const showDeleteButton = (place) => {
     place.showDelete = true;
 };
@@ -82,27 +122,31 @@ const hideDeleteButton = (place) => {
     place.showDelete = false;
 };
 
-const deletePlace = (place) => {
+const deletePlace = (place: any) => {
     const index = selectedPlace.value.indexOf(place);
     if (index !== -1) {
         selectedPlace.value.splice(index, 1);
-        markerList.value.splice(index, 1);
         updateMarkerList();
+        savePlacesForDate();
     }
 };
 
-const filterPlaces = () => {
-    filteredPlaces.value = placeList.value.filter(place =>
-        place.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
-};
-
-const selectPlace = (place) => {
+const selectPlace = (place: any) => {
     if (!selectedPlace.value.includes(place)) {
         selectedPlace.value.push(place);
         updateMarkerList();
+        savePlacesForDate();
     }
 };
+
+const savePlacesForDate = () => {
+    placesByDate.value[date.value] = [...selectedPlace.value];
+};
+
+watch(date, (newDate) => {
+    selectedPlace.value = placesByDate.value[newDate] || [];
+    updateMarkerList();
+});
 
 const updateMarkerList = () => {
     markerList.value = selectedPlace.value.map((place, index) => ({
