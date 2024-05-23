@@ -4,69 +4,52 @@
             <CategoryBar @updateSearchFilter="handleSearchFilterUpdate" />
         </v-row>
         <v-row class="ga-5">
-            <!-- 왼쪽 검색창 -->
-            <!-- <v-col>
-                <v-text-field v-model="searchQuery" label="Search Places" @input="filterPlaces"></v-text-field>
-                <v-list>
-                    <v-list-item v-for="place in filteredPlaces" :key="place.title" @click="selectPlace(place)">
-                        <div class="d-flex">
-                            <v-list-item-avatar style="margin-right: 15px;">
-                                <v-img :src="place.image" width="50" height="50"></v-img>
-                            </v-list-item-avatar>
-                            <v-list-item-content>
-                                <v-list-item-title>{{ place.title }}</v-list-item-title>
-                                <v-list-item-subtitle>{{ place.description }}</v-list-item-subtitle>
-                            </v-list-item-content>
-                        </div>
-                    </v-list-item>
-                </v-list>
-            </v-col> -->
             <div class="list-wrapper" :class="{ 'closed': !isListVisible }">
                 <v-infinite-scroll :height="600" :onLoad="load" @update="updateList">
                     <template v-for="(place, index) in places" :key="place.id">
-                        <div class="place-item"">
-              <div class=" place-details">
-                            <h3>{{ place.title }}</h3>
-                            <p>{{ place.addr1 }}</p>
+                        <div class="place-item" @click="selectPlace(place)">
+                            <div class="place-details">
+                                <h3>{{ place.title }}</h3>
+                                <p>{{ place.addr1 }}</p>
+                            </div>
                         </div>
+                        <v-divider></v-divider>
+                    </template>
+                </v-infinite-scroll>
             </div>
-            <v-divider></v-divider> <!-- 각 값들 간 구분선 추가 -->
-</template>
-</v-infinite-scroll>
-</div>
 
-<!-- 중앙 카카오맵 -->
-<v-col>
-    <KakaoMap :lat="33.452" :lng="126.573">
-        <KakaoMapMarkerPolyline :markerList="markerList" :showMarkerOrder="true" strokeColor="#C74C5E"
-            :strokeOpacity="1" strokeStyle="shortdot" />
-    </KakaoMap>
-</v-col>
+            <v-col>
+                <KakaoMap :lat="33.452" :lng="126.573">
+                    <KakaoMapMarkerPolyline :markerList="markerList" :showMarkerOrder="true" strokeColor="#C74C5E"
+                        :strokeOpacity="1" strokeStyle="shortdot" />
+                </KakaoMap>
+            </v-col>
 
-<!-- 선택된 장소 목록 -->
-<v-col class="d-flex flex-column ga-5">
-    <div>
-        <draggable v-model="selectedPlace" class="dragArea">
-            <template #item="{ element: place }">
-                <v-card class="custom-card" @mouseover="showDeleteButton(place)" @mouseleave="hideDeleteButton(place)">
-                    <v-card-title>Selected Place</v-card-title>
-                    <v-card-text>
-                        <div>
-                            <v-img :src="place.image" width="50" height="50"></v-img>
-                            <span>{{ place.title }}</span>
-                        </div>
-                        <div>{{ place.description }}</div>
-                        <v-btn icon class="delete-button" @click="deletePlace(place)" v-show="place.showDelete">
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                    </v-card-text>
-                </v-card>
-            </template>
-        </draggable>
-    </div>
-</v-col>
-</v-row>
-</v-container>
+            <v-col class="d-flex flex-column ga-5">
+                <div>
+                    <draggable v-model="selectedPlace" class="dragArea">
+                        <template #item="{ element: place }">
+                            <v-card class="custom-card" @mouseover="showDeleteButton(place)"
+                                @mouseleave="hideDeleteButton(place)">
+                                <v-card-title>{{ place.title }}</v-card-title>
+                                <v-card-text>
+                                    <div>
+                                        <v-img :src="place.image" width="50" height="50"></v-img>
+                                        <span>{{ place.addr1 }}</span>
+                                    </div>
+                                    <div>{{ place.description }}</div>
+                                    <v-btn icon class="delete-button" @click="deletePlace(place)"
+                                        v-show="place.showDelete">
+                                        <v-icon>mdi-delete</v-icon>
+                                    </v-btn>
+                                </v-card-text>
+                            </v-card>
+                        </template>
+                    </draggable>
+                </div>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script setup lang="ts">
@@ -114,22 +97,24 @@ const filterPlaces = () => {
     );
 };
 
+const selectPlace = (place) => {
+    if (!selectedPlace.value.includes(place)) {
+        selectedPlace.value.push(place);
+        updateMarkerList();
+    }
+};
+
 const updateMarkerList = () => {
     markerList.value = selectedPlace.value.map((place, index) => ({
-        lat: place.lat,
-        lng: place.lng,
+        lat: place.latitude,
+        lng: place.longitude,
         image,
         orderBottomMargin: '37px',
         order: index === 0 ? '출발' : index
     }));
 };
 
-const selectPlace = (place) => {
-    selectedPlace.value.push(place);
-    updateMarkerList();
-};
-
-const markerList: Ref<KakaoMapMarkerListItem[]> = ref([]);
+const markerList = ref<KakaoMapMarkerListItem[]>([]);
 
 // Axios를 사용하여 백엔드 API 호출
 // const fetchPlaces = async () => {
@@ -161,7 +146,7 @@ const getPlaces = () => {
         searchFilter.value,
         ({ data }) => {
             console.log("Raw API Response:", data);
-            places.value = data
+            places.value = data;
             loading.value = false; // 데이터 로드가 완료되면 로딩 상태 변경
             console.log("Processed Places Data:", places.value);
 
@@ -187,12 +172,13 @@ const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
 const hasMore = ref(true);
 
 async function api() {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(Array.from({ length: 10 }, (k, v) => v + items.value.at(-1) + 1));
-    }, 1000);
-  });
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(Array.from({ length: 10 }, (k, v) => v + items.value.at(-1) + 1));
+        }, 1000);
+    });
 }
+
 async function load({ done }) {
     // API 호출
     if (hasMore.value) {
