@@ -58,6 +58,44 @@
                 </div>
             </v-col>
         </v-row>
+
+        <!-- 작성 버튼 -->
+        <v-row justify="end" class="fixed-bottom" style="position: fixed; bottom: 20px; right: 20px;">
+            <v-col cols="6" class="mr-2">
+                <v-btn class="ma-2" icon="mdi-pencil" color="primary" style="width: 60px; height: 60px;"
+                    @click="toggleIcons"></v-btn>
+            </v-col>
+        </v-row>
+
+        <!-- 확인/편집 다이얼로그 -->
+        <v-dialog v-model="confirmEditDialog" max-width="500">
+            <v-card>
+                <v-card-title>텍스트 확인 및 편집</v-card-title>
+                <v-card-text>
+                    <v-row v-if="editing !== -1">
+                        <v-col cols="12">
+                            <v-text-field v-model="editedText[editing]" label="텍스트를 입력하세요"></v-text-field>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn color="primary" @click="confirmEdit">확인</v-btn>
+                    <v-btn color="primary" @click="editText">편집</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <!-- 추가된 버튼들 -->
+        <v-row v-if="showIcons" justify="end" class="fixed-bottom" style="position: fixed; bottom: 120px; width: 100%;">
+            <v-col v-for="(icon, index) in icons" :key="index" cols="6" class="mr-2">
+                <v-row>
+                    <v-col cols="12">
+                        <v-btn class="ma-2" :icon="icon" color="secondary" style="width: 60px; height: 60px;"
+                            @click="openConfirmEditDialog(index)"></v-btn>
+                    </v-col>
+                </v-row>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
@@ -84,17 +122,35 @@ const loading = ref(true); // 로딩 상태를 나타내는 변수
 const isListVisible = ref(true);
 
 // 날짜 관련 변수
-const menu = ref(false);
 const date = ref(new Date().toISOString().split('T')[0]);
 
-const yesterday = new Date();
-yesterday.setDate(yesterday.getDate() - 1);
-const startDate = ref(yesterday.toISOString().split('T')[0]);
+const showIcons = ref(false);
+const icons = ref(['mdi-format-title', 'mdi-map-marker', 'mdi-calendar', 'mdi-account-group']);
 
-const dayAfterTomorrow = new Date();
-dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
-const endDate = ref(dayAfterTomorrow.toISOString().split('T')[0]);
+const editing = ref(-1); // 현재 편집 중인 버튼의 인덱스
+const editedText = ref(['', '', '', '']); // 편집된 텍스트 배열
+const confirmEditDialog = ref(false); // 확인/편집 다이얼로그 표시 여부
 
+const toggleIcons = () => {
+    showIcons.value = !showIcons.value;
+};
+
+const openConfirmEditDialog = (index) => {
+    editing.value = index;
+    editedText.value[index] = `${editedText.value[index]}`;
+    confirmEditDialog.value = true; // 확인/편집 다이얼로그 열기
+};
+
+const confirmEdit = () => {
+    // 확인 버튼을 누르면 편집한 텍스트를 저장하고 다이얼로그를 닫음
+    console.log(`Button ${editing.value}의 텍스트: ${editedText.value[editing.value]}`);
+    confirmEditDialog.value = false;
+};
+
+const editText = () => {
+    // 편집 버튼을 누르면 편집 모드로 전환
+    confirmEditDialog.value = false;
+};
 const placesByDate = ref({});
 
 const formatDate = (d) => d.toISOString().split('T')[0];
@@ -278,5 +334,17 @@ watch(selectedPlace, savePlacesForDate);
 
 .custom-card:hover .delete-button {
     opacity: 1;
+}
+
+.px-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 43%;
+    width: 100%;
 }
 </style>
