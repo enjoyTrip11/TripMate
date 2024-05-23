@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container fluid>route
         <div class="wrapper">
             <v-card class="mx-auto custom-card" color="white" d-flex justify-center align-center>
                 <v-img height="600" color="#E0F4FF" cover class="img-center">
@@ -78,7 +78,7 @@
                             </v-col>
                         </v-row>
                         <div class="d-flex justify-center">
-                            <router-link :to="{ name: 'planCreate' }">
+                            <router-link :to="{ name: 'planCreate', params: { tripId : 0} }">
                                 <v-btn depressed width="150px" @click="handleTravel">여행하기</v-btn>
                             </router-link>
                         </div>
@@ -118,7 +118,7 @@
                                             <div class="align-self-center card-detail-button">
                                                 <v-btn v-for="(icon, index) in icons" :key="index"
                                                     :class="{ 'show-btns': isHovering }" :color="transparent" :icon="icon"
-                                                    variant="text"></v-btn>
+                                                    variant="text" @click="navigateToPlanCreate(item.id)"></v-btn>
                                             </div>
                                         </div>
                                     </v-card>
@@ -136,6 +136,7 @@
 import DatePickerRange from "@/components/DatePickerRange.vue";
 import axios from 'axios';
 import { ref } from "vue";
+import { useRouter } from 'vue-router';
 const selectedDateRange = ref(null)
 export default {
     data() {
@@ -165,9 +166,13 @@ export default {
         handleDateChange(value) {
             selectedDateRange.value = value;
         },
+        navigateToPlanCreate(tripId) {
+            this.$router.push({ path: `/plan/create?tripId=${tripId}` });
+        },
         fetchFriends() {
             axios.get('http://localhost:8080/user/list')
                 .then(response => {
+                    console.log("FetchFriends........", response.data)
                     this.people = response.data.map(friend => ({
                         name: friend.name,
                         avatar: friend.profile,
@@ -187,12 +192,15 @@ export default {
                 }
             })
             .then(response => {
+                console.log("FetchMyPlans................", response.data)
                 this.myPlans = response.data.map(plan => ({
-                        title: plan.title,
-                        place: plan.place,
-                        date: plan.startDate + " ~ " + plan.endDate,
-                        writer: this.people.find(person => person.userId === plan.writer).name
-                    }));
+                    id: plan.tripId,
+                    title: plan.title,
+                    place: plan.place,
+                    date: plan.startDate + " ~ " + plan.endDate,
+                    writer: this.people.find(person => person.userId === plan.writer).name
+                }));
+                console.log(this.myPlans);
             })
             .catch(error => {
                 console.error('Error fetching my plans:', error);

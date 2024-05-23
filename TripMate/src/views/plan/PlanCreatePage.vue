@@ -112,14 +112,19 @@ import axios from 'axios';
 import { KakaoMap, KakaoMapMarkerPolyline, type KakaoMapMarkerListItem } from 'vue3-kakao-maps';
 import draggable from 'vuedraggable';
 import { loadPlaces } from '@/api/place';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
+
 const image = {
     imageSrc: 'https://vue3-kakao-maps.netlify.app/images/redMarker.png',
     imageWidth: 48,
     imageHeight: 48
 };
+
+const tripId = route.params.tripId;
+console.log("!!!!!!!!!!!!!!!!!!!!!!", tripId);
 
 const trip = ref(null);
 const plans = ref([]);
@@ -138,7 +143,6 @@ const findPlaceById = async (locationId) => {
 };
 
 const loadTripData = async () => {
-    const tripId = 18; // 예시로 1번 여행 정보를 가져옴
     try {
         const response = await axios.get(`http://localhost:8080/trip/${tripId}`);
         const { trip: tripData, plans: planData, invites: inviteData } = response.data;
@@ -426,6 +430,23 @@ watch(editedText, (newValue) => { });
 .map {
     position: relative;
     width: 800px;
+}
+
+.list-wrapper {
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+}
+
+.list-wrapper.closed {
+  display: none;
+}
+
+.map-wrapper {
+  flex-grow: 1;
+  position: relative;
+  height: 600px;
+  width: 100%;
 }
 
 .dragArea {
