@@ -96,7 +96,7 @@
                                 <v-hover v-slot="{ isHovering, props }">
                                     <v-card :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 12 : 2"
                                         v-bind="props">
-                                        <v-img :src="item.img" height="250px" cover>
+                                        <div :style="{ backgroundColor: getRandomPastelColor(), height: '250px', backgroundSize: 'cover' }">
                                             <v-card-title
                                                 class="text-h6 font-weight-bold text-black d-flex flex-column card-detail-title">                              
                                                 <p class="mt-4">
@@ -117,10 +117,10 @@
                                             </v-card-title>
                                             <div class="align-self-center card-detail-button">
                                                 <v-btn v-for="(icon, index) in icons" :key="index"
-                                                    :class="{ 'show-btns': isHovering }" :color="white" :icon="icon"
+                                                    :class="{ 'show-btns': isHovering }" :color="transparent" :icon="icon"
                                                     variant="text"></v-btn>
                                             </div>
-                                        </v-img>
+                                        </div>
                                     </v-card>
                                 </v-hover>
                             </v-col>
@@ -197,6 +197,11 @@ export default {
             .catch(error => {
                 console.error('Error fetching my plans:', error);
             });
+        },
+        getRandomPastelColor() {
+            const pastelColors = ['#FFC3A0', '#FFD8B8', '#FFEEC9', '#D0FFF2', '#C7CEEA', '#FFDFD3', '#B5EAD7'];
+            const randomColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
+            return randomColor;
         },
         handleTravel() {
             const dates = selectedDateRange.value.split(' ~ ');
@@ -293,7 +298,7 @@ export default {
 
 .card-detail-title {
     /* position: absolute; */
-    margin-top: 20px;
+    margin-top: 0px;
     width: 100%;
     text-align: center;
 }
@@ -305,7 +310,7 @@ export default {
 .card-detail-button {
     display: flex;
     justify-content: center;
-    margin-top: 190px;
+    margin-top: 15px;
 }
 
 .card-container-up {
@@ -321,7 +326,7 @@ export default {
 }
 
 .show-btns {
-    color: rgba(255, 255, 255, 1) !important;
+    color: rgb(103, 103, 103) !important;
 }
 
 .wrapper {
