@@ -36,6 +36,7 @@
   const loading = ref(true); // 로딩 상태를 나타내는 변수
   
   const searchFilter = ref({
+    userId: userId,
     keyword: "",
     sidoCode: 36,
     contentTypeId: 14,
