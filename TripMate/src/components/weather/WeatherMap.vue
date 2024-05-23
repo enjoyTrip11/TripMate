@@ -1,45 +1,45 @@
 <template>
   <v-container fluid class="all-container">
     <div class="container">
-    <h2>실시간 전국 날씨</h2>
-    <div class="buttons">
-      <div v-for="date in weekDates" :key="date" @click="selectDate(date)" :class="{ 'selected': selectedDate === date }" class="date-button">
-        <span v-html="formatDate(date)" :class="{ 'selected': selectedDate === date }"></span>
-        <hr :class="{ 'selected': selectedDate === date }">
+      <h2>실시간 전국 날씨</h2>
+      <div class="buttons">
+        <div v-for="date in weekDates" :key="date" @click="selectDate(date)" :class="{ 'selected': selectedDate === date }" class="date-button">
+          <span v-html="formatDate(date)" :class="{ 'selected': selectedDate === date }"></span>
+          <hr :class="{ 'selected': selectedDate === date }">
+        </div>
       </div>
-    </div>
-    <div class="toggle-buttons">
+      <div class="toggle-buttons">
         <v-btn :class="{ 'selected': selectedPeriod === 'AM' }" @click="selectPeriod('AM')">오전</v-btn>
         <v-btn :class="{ 'selected': selectedPeriod === 'PM' }" @click="selectPeriod('PM')">오후</v-btn>
       </div>
-    <v-card class="map-card">
-      <div class="weather-container">
-        <div v-if="!loading">
-          <div v-for="city in cities" :key="city.name" class="weather-info" :style="city.position">
-            <div v-if="city.weatherData ">
-              <img :src="city.weatherIcon" alt="Weather Icon" class="weather-icon" @click="selectCity(city)" />
-              <div class="temperature">{{ city.name }} {{ city.weatherData.temp }}°C</div>
-            </div>
-            <div v-else>
-              <p>날씨 정보를 불러오는 중...</p>
+      <v-card class="map-card">
+        <div class="weather-container">
+          <div v-if="!loading">
+            <div v-for="city in cities" :key="city.name" class="weather-info" :style="city.position">
+              <div v-if="city.weatherData ">
+                <img :src="city.weatherIcon" alt="Weather Icon" class="weather-icon" @click="selectCity(city)" />
+                <div class="temperature">{{ city.name }} {{ city.weatherData.temp }}°C</div>
+              </div>
+              <div v-else>
+                <p>날씨 정보를 불러오는 중...</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </v-card>
-  </div>
-  <div class="container">
-      <h2>{{ selectedCity }} 상세 날씨</h2>
-      <div v-if="selectedCity">
-        <p>도시: {{ selectedCity.name }}</p>
-        <p>기온: {{ selectedCity.weatherData.temp }}°C</p>
-        <p>습도: {{ selectedCity.weatherData.humidity }}</p>
-        <p>풍속: {{ selectedCity.weatherData.wind_speed }}</p>
-        <p>날씨: {{ selectedCity.weatherData.weather }}</p>
-        <p>날씨 상세: {{ selectedCity.weatherData.weatherDescrib }}</p>
+      </v-card>
+    </div>
+    <div class="container">
+      <h2>상세 날씨</h2>
+      <div v-if="!scCity">
+        <p>선택된 지역이 없어요!</p>
       </div>
       <div v-else>
-        <p>날씨 정보가 선택되지 않았습니다.</p>
+        <p>도시: {{ selectedCityInfo.name }}</p>
+        <p>기온: {{ selectedCityInfo.weatherData.temp }}°C</p>
+        <p>습도: {{ selectedCityInfo.weatherData.humidity }}</p>
+        <p>풍속: {{ selectedCityInfo.weatherData.wind_speed }}</p>
+        <p>날씨: {{ selectedCityInfo.weatherData.weather }}</p>
+        <p>날씨 상세: {{ selectedCityInfo.weatherData.weatherDescrib }}</p>
       </div>
     </div>
   </v-container>
@@ -49,17 +49,15 @@
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 
-const selectedCity = ref(null);
+const scCity = ref(false); 
+
+const selectedCityInfo = ref(null); // selectedCity 변수를 selectedCityInfo로 변경
 
 function selectCity(city) {
   console.log("Select!!!!! " , city)
-  selectCity.value = city;
+  selectedCityInfo.value = city; // 변수명 변경
+  scCity.value= true;
 }
-
-// const showWeatherDetails = (city) => {
-//   selectedCity.value = city;
-// };
-
 
 const getWeekDates = () => {
   const today = new Date();
@@ -128,7 +126,7 @@ const fetchWeather = async (city, selectedDate, selectedPeriod) => {
     console.log(response.data.data);
     
     city.weatherData = {
-      temp: response.data.data[0].temp,
+      temp: response.data.data[0].      temp,
       humidity: response.data.data[0].humidity,
       wind_speed: response.data.data[0].speed,
       weather: response.data.data[0].weather[0].main,
@@ -175,6 +173,7 @@ const loading = ref(true); // 로딩 상태 추가
 onMounted(async () => {
   try {
     await Promise.all(cities.value.map(city => fetchWeather(city, selectedDate.value, selectedPeriod.value)));
+
     console.log("End Load..................")
   } catch (error) {
     console.error('Error fetching weather data:', error);
@@ -307,3 +306,4 @@ hr {
   margin-top: -10px;
 }
 </style>
+
