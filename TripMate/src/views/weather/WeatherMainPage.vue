@@ -9,11 +9,8 @@
         </v-row>
 
     <v-row>
-      <v-col cols="5" class="no-padding">
+      <v-col cols="12" class="no-padding">
         <WeatherMap />
-      </v-col>
-      <v-col cols="7" class="no-padding">
-        <WeatherDetail />
       </v-col>
     </v-row>
   </v-container>
@@ -21,7 +18,6 @@
 
 <script setup>
 import WeatherMap from '@/components/weather/WeatherMap.vue'
-import WeatherDetail from '@/components/weather/WeatherDetail.vue'
 </script>
 
 <style scoped>
