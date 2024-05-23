@@ -28,18 +28,29 @@
         </div>
       </v-card>
     </div>
-    <div class="container">
+    <div class="detail-container">
       <h2>상세 날씨</h2>
+      <v-divider></v-divider>
       <div v-if="!scCity">
-        <p>선택된 지역이 없어요!</p>
+        <p class="mt-5">선택된 지역이 없어요!</p>
       </div>
       <div v-else>
-        <p>도시: {{ selectedCityInfo.name }}</p>
-        <p>기온: {{ selectedCityInfo.weatherData.temp }}°C</p>
-        <p>습도: {{ selectedCityInfo.weatherData.humidity }}</p>
-        <p>풍속: {{ selectedCityInfo.weatherData.wind_speed }}</p>
-        <p>날씨: {{ selectedCityInfo.weatherData.weather }}</p>
-        <p>날씨 상세: {{ selectedCityInfo.weatherData.weatherDescrib }}</p>
+        <h2 class="city">{{ selectedCityInfo.name }}</h2>
+        
+        <div class="img-temp">
+          <img :src="selectedCityInfo.weatherIcon" class="detail-weather-icon">
+          <h2 class="temp">{{ selectedCityInfo.weatherData.temp }}°C</h2>
+        </div>
+        <h2 class="hum">일자: {{  selectedDate }}</h2>
+        <h2 class="describ">날씨 상세: {{ selectedCityInfo.weatherData.weatherDescrib }}</h2>
+        <h2 class="hum">습도: {{ selectedCityInfo.weatherData.humidity }}</h2>
+        <h2 class="wind">풍속: {{ selectedCityInfo.weatherData.wind_speed }}</h2>
+
+        <router-link :to="{name:'map'}">
+        <v-btn class="city-info-button" elevation="10">
+          {{ selectedCityInfo.name }} 여행지 정보 찾기!
+      </v-btn>
+    </router-link>
       </div>
     </div>
   </v-container>
@@ -126,7 +137,7 @@ const fetchWeather = async (city, selectedDate, selectedPeriod) => {
     console.log(response.data.data);
     
     city.weatherData = {
-      temp: response.data.data[0].      temp,
+      temp: response.data.data[0].temp,
       humidity: response.data.data[0].humidity,
       wind_speed: response.data.data[0].speed,
       weather: response.data.data[0].weather[0].main,
@@ -191,9 +202,13 @@ onMounted(async () => {
 
 .container {
   margin-left: 20px; /* 왼쪽 마진 설정 */
-  width: 500px;
+  width: 600px;
 }
 
+.detail-container {
+  margin-left: 60px; /* 왼쪽 마진 설정 */
+  width: 500px;
+}
 .container > * {
   margin-left: 20px; /* 하위 요소의 왼쪽 마진 설정 */
 }
@@ -259,7 +274,7 @@ hr {
   display: flex;
   position: absolute; /* 절대 위치로 설정하여 부모 요소(map-card)를 기준으로 배치합니다. */
   bottom: 50px; /* 아래쪽 여백 설정 */
-  left: 350px; /* 오른쪽 여백 설정 */
+  left: 485px; /* 오른쪽 여백 설정 */
   z-index: 1;
 }
 
@@ -304,6 +319,52 @@ hr {
   font-size: 1.2em; /* 온도 글자 크기 설정 */
   /* font-weight: bold;  */
   margin-top: -10px;
+}
+
+.detail-weather-icon {
+  width: 180px;
+  height: 180px;;
+}
+
+.img-temp {
+  display: flex;
+  flex-direction:  row;
+  align-items: center;
+  margin-left: -40px;
+}
+
+.temp {
+  margin-left: -30px;
+  margin-top: 10px;
+  font-size: 80px;
+} 
+
+.city {
+  margin-top: 80px;
+  margin-bottom: -30px;
+  font-size: 40px;
+} 
+.wind .hum .describ {
+  font-weight: normal;
+}
+.hum {
+  font-weight: normal;
+}
+
+.describ {
+  font-weight: normal;
+}
+
+.city-info-button {
+  margin-top: 70px;
+  border-radius: 30px; /* 둥근 타원형 모양으로 만듭니다. */
+  /* box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2); 그림자를 추가합니다. */
+  background-color: transparent; /* 배경색을 없앱니다. */
+  /* color: rgb(0, 153, 255); 버튼의 텍스트 색상을 지정합니다. */
+  font-weight: bold; /* 버튼 텍스트의 글꼴 두껍게 설정합니다. */
+  width: 400px;
+  height: 60px;
+  font-size : 25px
 }
 </style>
 
