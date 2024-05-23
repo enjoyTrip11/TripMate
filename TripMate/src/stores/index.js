@@ -1,22 +1,31 @@
+// store/index.js
 import { createStore } from 'vuex';
 
 const store = createStore({
   state: {
-    accessToken: null
+    isAuthenticated: !!localStorage.getItem('accessToken'),
+    accessToken: localStorage.getItem('accessToken') || null,
   },
   mutations: {
-    setAccessToken(state, token) {
+    SET_AUTH(state, status) {
+      state.isAuthenticated = status;
+    },
+    SET_ACCESS_TOKEN(state, token) {
       state.accessToken = token;
-    }
+    },
   },
   actions: {
-    saveAccessToken({ commit }, token) {
-      commit('setAccessToken', token);
-    }
+    saveAccessToken({ commit }, accessToken) {
+      localStorage.setItem('accessToken', accessToken);
+      commit('SET_ACCESS_TOKEN', accessToken);
+      commit('SET_AUTH', true);
+    },
+    logout({ commit }) {
+      localStorage.removeItem('accessToken');
+      commit('SET_ACCESS_TOKEN', null);
+      commit('SET_AUTH', false);
+    },
   },
-  getters: {
-    accessToken: state => state.accessToken
-  }
 });
 
 export default store;

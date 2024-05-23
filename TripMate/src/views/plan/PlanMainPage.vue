@@ -106,7 +106,7 @@
                                         </v-card-title>
                                         <div class="align-self-center card-detail-button">
                                             <v-btn v-for="(icon, index) in icons" :key="index"
-                                                :class="{ 'show-btns': isHovering }" :color="transparent" :icon="icon"
+                                                :class="{ 'show-btns': isHovering }" :color="white" :icon="icon"
                                                 variant="text"></v-btn>
                                         </div>
                                     </v-img>

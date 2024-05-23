@@ -23,9 +23,12 @@
         </template>
 
         <v-list>
-          <v-list-item v-for="(item, i) in userItems" :key="i">
+          <v-list-item v-for="(item, i) in userItems" :key="i" @click="item.title === '로그아웃' ? handleLogout() : null">
             <v-list-item-title>
-              <router-link :to="{ name: item.value }" class="custom-router-link">{{ item.title }}</router-link>
+              <router-link v-if="item.title !== '로그아웃'" :to="{ name: item.value }" class="custom-router-link">{{
+                item.title
+              }}</router-link>
+              <span v-else class="custom-router-link">{{ item.title }}</span>
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -46,7 +49,23 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
+  computed: {
+    ...mapState(['isAuthenticated']),
+    userItems() {
+      return this.isAuthenticated
+        ? [
+          { title: '프로필', value: 'profile' },
+          { title: '로그아웃', value: 'logout' },
+        ]
+        : [
+          { title: '로그인', value: 'login' },
+          { title: '회원가입', value: 'join' },
+        ];
+    },
+  },
   data() {
     return {
       logoDrawer: false,
@@ -57,20 +76,18 @@ export default {
         { title: '핫플레이스', value: 'hotplace' },
         { title: '게시판', value: 'board' },
       ],
-
       userDrawer: false,
-      userItems: [
-        { title: '로그인', value: 'login' },
-        { title: '회원가입', value: 'join' },
-        { title: '프로필', value: 'profile' },
-        { title: '로그아웃', value: 'logout' },
-      ],
     };
   },
   methods: {
+    ...mapActions(['logout']),
     toggleDrawer(drawerName) {
       this[drawerName] = !this[drawerName];
     },
+    handleLogout() {
+      //this.toggleDrawer('userDrawer');
+      this.logout();
+    }
   },
 };
 </script>
@@ -92,7 +109,7 @@ export default {
   font-size: 24px;
   font-weight: bold;
   margin-left: 30px;
-  color: black; 
+  color: black;
   font-size: 2rem;
   font-weight: bold;
 }
@@ -108,8 +125,11 @@ export default {
 
 
 .custom-router-link {
-  color: black; /* 글자 색상 검정색 */
-  text-decoration: none; /* 밑줄 제거 */
-  font-size: 1.1rem; /* 글자 크기 변경 */
+  color: black;
+  /* 글자 색상 검정색 */
+  text-decoration: none;
+  /* 밑줄 제거 */
+  font-size: 1.1rem;
+  /* 글자 크기 변경 */
 }
 </style>

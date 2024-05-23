@@ -57,6 +57,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import axios from 'axios';
 import { KakaoMap, KakaoMapMarkerPolyline, type KakaoMapMarkerListItem } from 'vue3-kakao-maps';
 import draggable from 'vuedraggable';
 
@@ -66,67 +67,9 @@ const image = {
     imageHeight: 48
 };
 
-const placeList = [
-    {
-        lat: 33.4509,
-        lng: 126.571,
-        image: 'https://vue3-kakao-maps.netlify.app/images/redMarker.png',
-        title: 'Place 1',
-        description: 'Description for Place 1'
-    },
-    {
-        lat: 33.451,
-        lng: 126.572,
-        image: 'https://example.com/image2.jpg',
-        title: 'Place 2',
-        description: 'Description for Place 2'
-    },
-    {
-        lat: 33.452,
-        lng: 126.573,
-        image: 'https://example.com/image3.jpg',
-        title: 'Place 3',
-        description: 'Description for Place 3'
-    },
-    {
-        lat: 33.4518,
-        lng: 126.5725,
-        image: 'https://example.com/image4.jpg',
-        title: 'Place 4',
-        description: 'Description for Place 4'
-    },
-    {
-        lat: 33.4512,
-        lng: 126.571,
-        image: 'https://example.com/image1.jpg',
-        title: 'Place 5',
-        description: 'Description for Place 5'
-    },
-    {
-        lat: 33.451,
-        lng: 126.576,
-        image: 'https://example.com/image2.jpg',
-        title: 'Place 6',
-        description: 'Description for Place 6'
-    },
-    {
-        lat: 33.452,
-        lng: 126.572,
-        image: 'https://example.com/image3.jpg',
-        title: 'Place 7',
-        description: 'Description for Place 7'
-    },
-    {
-        lat: 33.4518,
-        lng: 126.5725,
-        image: 'https://example.com/image4.jpg',
-        title: 'Place 8',
-        description: 'Description for Place 8'
-    }
-];
-
 const searchQuery = ref('');
-const filteredPlaces = ref(placeList);
+const placeList = ref([]);
+const filteredPlaces = ref([]);
 const selectedPlace = ref([]);
 
 const showDeleteButton = (place) => {
@@ -147,7 +90,7 @@ const deletePlace = (place) => {
 };
 
 const filterPlaces = () => {
-    filteredPlaces.value = placeList.filter(place =>
+    filteredPlaces.value = placeList.value.filter(place =>
         place.title.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 };
@@ -169,8 +112,25 @@ const selectPlace = (place) => {
 
 const markerList: Ref<KakaoMapMarkerListItem[]> = ref([]);
 
-watch(selectedPlace, updateMarkerList);
+// Axios를 사용하여 백엔드 API 호출
+const fetchPlaces = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/place');
+        if (response.status === 200) {
+            placeList.value = response.data;
+            filteredPlaces.value = placeList.value;
+        } else if (response.status === 204) {
+            placeList.value = [];
+            filteredPlaces.value = [];
+        }
+    } catch (error) {
+        console.error('Error fetching places:', error);
+    }
+};
 
+fetchPlaces();
+
+watch(selectedPlace, updateMarkerList);
 </script>
 
 <style>
