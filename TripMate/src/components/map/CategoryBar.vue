@@ -2,18 +2,17 @@
     <v-container fluid>
       <v-row>
         <v-row class="container">
-            <div class="search-bar">
-                <select v-model="selectedRegion" @change="onSearch">
-                    <option disabled value="">지역 선택</option>
-                    <option v-for="region in regions" :key="region.id" :value="region.id">{{ region.name }}</option>
-                </select>
-                <div class="divider"></div>
-                <input type="text" v-model="keyword" @input="onSearch" placeholder="키워드를 입력하세요" />
-                <font-awesome-icon :icon="['fas', 'search']" class="search-icon" />
-            </div>
+          <div class="search-bar">
+            <select v-model="selectedRegion" @change="emitSearch">
+              <option disabled value="">지역 선택</option>
+              <option v-for="region in regions" :key="region.id" :value="region.id">{{ region.name }}</option>
+            </select>
+            <div class="divider"></div>
+            <input type="text" v-model="keyword" @input="emitSearch" placeholder="키워드를 입력하세요" />
+            <font-awesome-icon :icon="['fas', 'search']" class="search-icon" @click="emitSearch" />
+          </div>
         </v-row>
         <v-divider></v-divider>
-
         <div class="category-bar">
           <div
             v-for="(category, index) in categories"
@@ -34,12 +33,13 @@
   </template>
   
   <script setup>
-  import { defineEmits, ref } from 'vue';
+  import { ref } from 'vue';
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   
-
-const regions = [
+  const emit = defineEmits(['updateSearchFilter']);
+  
+  const regions = [
     { id: 1, name: '서울' },
     { id: 2, name: '인천' },
     { id: 3, name: '대전' },
@@ -57,20 +57,38 @@ const regions = [
     { id: 37, name: '전라북도' },
     { id: 38, name: '전라남도' },
     { id: 39, name: '제주도' }
-];
-
-const selectedRegion = ref('');
-const keyword = ref('');
-
-const onSearch = () => {
-    emit('search', {
-        region: selectedRegion.value,
-        keyword: keyword.value
+  ];
+  
+  const selectedRegion = ref('');
+  const keyword = ref('');
+  
+  const categories = [
+    { id: 0, name: '전체보기', icon: 'fa-th' },
+    { id: 12, name: '관광지', icon: 'landmark' },
+    { id: 14, name: '문화시설', icon: 'building' },
+    { id: 15, name: '축제공연행사', icon: 'calendar-alt' },
+    { id: 25, name: '여행코스', icon: 'route' },
+    { id: 28, name: '레포츠', icon: 'running' },
+    { id: 32, name: '숙박', icon: 'hotel' },
+    { id: 38, name: '쇼핑', icon: 'shopping-bag' },
+    { id: 39, name: '음식점', icon: 'utensils' }
+  ];
+  
+  const selectedCategory = ref(0);
+  
+  const emitSearch = () => {
+    emit('updateSearchFilter', {
+      keyword: keyword.value,
+      sidoCode: selectedRegion.value,
+      contentTypeId: selectedCategory.value
     });
-};
-
-
-
+  };
+  
+  const selectCategory = (categoryId) => {
+    selectedCategory.value = categoryId;
+    emitSearch();
+  };
+  
   import {
     faTh,
     faLandmark,
@@ -96,27 +114,6 @@ const onSearch = () => {
     faShoppingBag,
     faUtensils
   );
-  
-  const emit = defineEmits(['categorySelected']);
-  
-  const categories = [
-    { id: 0, name: '전체보기', icon: 'fa-th' }, 
-    { id: 12, name: '관광지', icon: 'landmark' },
-    { id: 14, name: '문화시설', icon: 'building' },
-    { id: 15, name: '축제공연행사', icon: 'calendar-alt' },
-    { id: 25, name: '여행코스', icon: 'route' },
-    { id: 28, name: '레포츠', icon: 'running' },
-    { id: 32, name: '숙박', icon: 'hotel' },
-    { id: 38, name: '쇼핑', icon: 'shopping-bag' },
-    { id: 39, name: '음식점', icon: 'utensils' }
-  ];
-  
-  const selectedCategory = ref(0);
-  
-  const selectCategory = (categoryId) => {
-    emit('categorySelected', categoryId);
-    selectedCategory.value = categoryId;
-  };
   </script>
   
   <style scoped>
@@ -173,9 +170,9 @@ const onSearch = () => {
   .container {
     justify-content: center;
     margin-bottom: 4px;
-}
-
-.search-bar {
+  }
+  
+  .search-bar {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -185,29 +182,29 @@ const onSearch = () => {
     max-width: 600px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
-}
-
-.search-bar select,
-.search-bar input {
+  }
+  
+  .search-bar select,
+  .search-bar input {
     padding: 8px;
     font-size: 16px;
     border: none;
     outline: none;
     background: transparent;
-}
-
-.search-bar input {
+  }
+  
+  .search-bar input {
     flex: 1;
-}
-
-.search-icon {
+  }
+  
+  .search-icon {
     color: #888;
-}
-
-.divider {
+  }
+  
+  .divider {
     width: 1px;
     height: 24px;
     background-color: #ccc;
-}
+  }
   </style>
   
