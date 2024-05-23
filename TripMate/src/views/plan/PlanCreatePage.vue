@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import CategoryBar from '@/components/map/CategoryBar.vue';
 import axios from 'axios';
 import { KakaoMap, KakaoMapMarkerPolyline, type KakaoMapMarkerListItem } from 'vue3-kakao-maps';
@@ -112,6 +112,28 @@ const image = {
     imageWidth: 48,
     imageHeight: 48
 };
+
+const trip = ref(null);
+const plans = ref([]);
+const invites = ref([]);
+
+const loadTripData = async () => {
+  const tripId = 18; // 예시로 1번 여행 정보를 가져옴
+  try {
+    const response = await axios.get(`http://localhost:8080/trip/${tripId}`);
+    const { trip: tripData, plans: planData, invites: inviteData } = response.data;
+    trip.value = tripData;
+    plans.value = planData;
+    invites.value = inviteData;
+    console.log(tripData);
+    console.log(planData);
+    console.log(inviteData);
+  } catch (error) {
+    console.error('Error loading trip:', error);
+  }
+};
+
+onMounted(loadTripData);
 
 const searchQuery = ref('');
 const placeList = ref([]);
@@ -215,22 +237,6 @@ const updateMarkerList = () => {
 };
 
 const markerList = ref<KakaoMapMarkerListItem[]>([]);
-
-// Axios를 사용하여 백엔드 API 호출
-// const fetchPlaces = async () => {
-//     try {
-//         const response = await axios.get('http://localhost:8080/place');
-//         if (response.status === 200) {
-//             placeList.value = response.data;
-//             filteredPlaces.value = placeList.value;
-//         } else if (response.status === 204) {
-//             placeList.value = [];
-//             filteredPlaces.value = [];
-//         }
-//     } catch (error) {
-//         console.error('Error fetching places:', error);
-//     }
-// };
 
 const searchFilter = ref({
     keyword: "",
