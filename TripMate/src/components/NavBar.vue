@@ -62,7 +62,7 @@ export default {
         ]
         : [
           { title: '로그인', value: 'login' },
-          { title: '회원가입', value: 'join' },
+          { title: '회원가입', value: 'signup' },
         ];
     },
   },
