@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <!-- 날씨 정보 제목 -->
+        <!-- 계획 제목 -->
         <v-row justify="center" class="mb-4">
             <v-col cols="auto">
                 <h1 class="display-1">{{ editedText[0] }}</h1>
@@ -25,7 +25,7 @@
                 </v-infinite-scroll>
             </div>
 
-            <v-col>
+            <v-col class="map">
                 <KakaoMap :lat="33.452" :lng="126.573">
                     <KakaoMapMarkerPolyline :markerList="markerList" :showMarkerOrder="true" strokeColor="#C74C5E"
                         :strokeOpacity="1" strokeStyle="shortdot" />
@@ -168,16 +168,66 @@ const toggleIcons = () => {
 };
 
 const handleButtonClick = (index) => {
-  if (index < 4) {
-    openConfirmEditDialog(index);
-  } else if(index == 4) {
-    otherFunction();
-  }
+    if (index < 4) {
+        openConfirmEditDialog(index);
+    } else if (index == 4) {
+        saveFunction();
+    }
 };
 
-// 다른 함수 정의
-const otherFunction = () => {
-  console.log('다른 함수 호출!');
+const saveFunction = () => {
+    // 선택한 날짜 범위 파싱
+    const dates = editedText.value[2].split(' ~ ');
+    const startDate = dates[0];
+    const endDate = dates[1];
+
+    // 여행 정보를 담은 객체 생성
+    const tripUpdateDto = {
+        title: editedText.value[0],
+        place: editedText.value[1],
+        startDate: startDate,
+        endDate: endDate
+    };
+
+    // 초대할 친구 목록을 담은 객체 생성
+    const inviteSaveDtoList = null;
+
+    const planSaveDtoList = [];
+
+    // placesByDate 객체의 각 날짜에 대해 반복
+    for (const dateKey in placesByDate.value) {
+        // 날짜별로 저장된 장소 목록 가져오기
+        const places = placesByDate.value[dateKey];
+
+        // 장소 목록을 순회하면서 planSaveDto 객체 생성
+        places.forEach((place, index) => {
+            const planSaveDto = {
+                tripId: 0, // 여행 ID는 생성 후에 할당될 것으로 가정하고 0으로 설정
+                locationId: place.locationId, // 장소의 고유 ID 사용
+                date: dateKey, // 날짜 값 사용
+                planOrder: index // 장소 목록의 인덱스 사용
+            };
+
+            // 생성된 planSaveDto를 planSaveDtoList에 추가
+            planSaveDtoList.push(planSaveDto);
+        });
+    }
+    console.log(planSaveDtoList);
+
+    // axios를 사용하여 POST 요청 보내기
+    axios.put('http://localhost:8080/trip/18', {
+        tripUpdateDto,
+        inviteSaveDtoList,
+        planSaveDtoList
+    })
+    .then(response => {
+        // 요청 성공 시 처리할 작업
+        console.log('여행 생성 성공');
+    })
+    .catch(error => {
+        // 요청 실패 시 처리할 작업
+        console.error('서버 에러:', error);
+    });
 };
 
 const openConfirmEditDialog = (index) => {
@@ -243,6 +293,7 @@ const selectPlace = (place: any) => {
 
 const savePlacesForDate = () => {
     placesByDate.value[date.value] = [...selectedPlace.value];
+    console.log(placesByDate);
 };
 
 watch(date, (newDate) => {
@@ -333,14 +384,19 @@ getPlaces();
 watch(selectedPlace, updateMarkerList);
 watch(selectedPlace, savePlacesForDate);
 watch(editedText, (newValue) => {
-  // newValue는 변경된 editedText 배열입니다.
-  // newValue[0]의 값이 <h1> 요소에 표시됩니다.
+    // newValue는 변경된 editedText 배열입니다.
+    // newValue[0]의 값이 <h1> 요소에 표시됩니다.
 });
 </script>
 
 <style>
 .ga-5 {
     width: 100%;
+}
+
+.map {
+    position: relative;
+    width: 800px;
 }
 
 .dragArea {
