@@ -98,7 +98,7 @@
                                         v-bind="props">
                                         <v-img :src="item.img" height="250px" cover>
                                             <v-card-title
-                                                class="text-h6 font-weight-bold text-white d-flex flex-column card-detail-title">
+                                                class="text-h6 font-weight-bold text-black d-flex flex-column card-detail-title">                              
                                                 <p class="mt-4">
                                                     {{ item.title }}
                                                 </p>
@@ -111,10 +111,7 @@
                                                         {{ item.date }}
                                                     </p>
                                                     <p class="text-caption font-weight-medium card-detail-content">
-                                                        <span v-for="(friend, index) in item.friend" :key="index">
-                                                            {{ friend }}<span v-if="index < item.friend.length - 1">,
-                                                            </span>
-                                                        </span>
+                                                        <span> {{ item.writer }} </span>
                                                     </p>
                                                 </div>
                                             </v-card-title>
@@ -190,8 +187,12 @@ export default {
                 }
             })
             .then(response => {
-                this.myPlans = response.data;
-                console.log(response.data);
+                this.myPlans = response.data.map(plan => ({
+                        title: plan.title,
+                        place: plan.place,
+                        date: plan.startDate + " ~ " + plan.endDate,
+                        writer: this.people.find(person => person.userId === plan.writer).name
+                    }));
             })
             .catch(error => {
                 console.error('Error fetching my plans:', error);
