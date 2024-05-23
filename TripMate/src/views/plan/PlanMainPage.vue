@@ -91,7 +91,7 @@
                 <h2 class="card-title">내 계획</h2>
                 <v-container class="pa-4 card-container-up">
                     <v-row justify="center">
-                        <template v-for="(item, i) in items" :key="i">
+                        <template v-for="(item, i) in myPlans" :key="i">
                             <v-col cols="12" md="4">
                                 <v-hover v-slot="{ isHovering, props }">
                                     <v-card :class="{ 'on-hover': isHovering }" :elevation="isHovering ? 12 : 2"
@@ -157,50 +157,7 @@ export default {
             people: [],
             place: '',
             icons: ['mdi-play'],
-            items: [
-                {
-                    title: '제목~~',
-                    place: '지역',
-                    date: '2024-05-19 ~ 2024-05-20',
-                    friend: ['친구 1', '친구 2', '친구 3'],
-                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg',
-                },
-                {
-                    title: 'Rock',
-                    place: 'Greatest Rock Hits',
-                    date: 'Lose yourself in rock tunes.',
-                    friend: ['Lose yourself in rock tunes.'],
-                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/singer.jpg',
-                },
-                {
-                    title: 'Mellow Moods',
-                    place: 'Ambient Bass',
-                    date: 'Chill beats to mellow you out.',
-                    friend: ['Chill beats to mellow you out.'],
-                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg',
-                },
-                {
-                    title: '제목',
-                    place: '지역',
-                    date: '2024-05-19 ~ 2024-05-20',
-                    friend: ['친구1', '친구2'],
-                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg',
-                },
-                {
-                    title: 'Rock',
-                    place: 'Greatest Rock Hits',
-                    date: 'Lose yourself in rock tunes.',
-                    friend: ['Lose yourself in rock tunes.'],
-                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/singer.jpg',
-                },
-                {
-                    title: 'Mellow Moods',
-                    place: 'Ambient Bass',
-                    date: 'Chill beats to mellow you out.',
-                    friend: ['Chill beats to mellow you out.'],
-                    img: 'https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg',
-                },
-            ],
+            myPlans: [],
             transparent: 'rgba(255, 255, 255, 0)',
         }
     },
@@ -223,6 +180,22 @@ export default {
                 .catch(error => {
                     console.error('Error fetching friends:', error);
                 });
+        },
+        fetchMyPlans() {
+            const accessToken = localStorage.getItem('accessToken');
+            console.log(accessToken);
+            axios.get('http://localhost:8080/trip', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            })
+            .then(response => {
+                this.myPlans = response.data;
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching my plans:', error);
+            });
         },
         handleTravel() {
             const dates = selectedDateRange.value.split(' ~ ');
@@ -270,6 +243,7 @@ export default {
     },
     created() {
         this.fetchFriends();
+        this.fetchMyPlans();
     }
 }
 </script>
