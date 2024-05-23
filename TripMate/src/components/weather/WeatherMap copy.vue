@@ -47,7 +47,7 @@ const getWeekDates = () => {
 };
 
 const weekDates = ref(getWeekDates());
-const selectedDate = ref(new Date().toISOString().split('T')[0]); // 기본값은 오늘 날짜로 설정
+const selectedDate = ref(weekDates.value[0]); // 기본값은 오늘 날짜로 설정
 const selectedPeriod = ref('AM'); // 기본값은 오전으로 설정
 
 const selectDate = (date) => {
