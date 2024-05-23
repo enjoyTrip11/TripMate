@@ -1,8 +1,11 @@
 <template>
     <v-container fluid>
+        <v-row justify="center" class="mb-0">
+            <CategoryBar @updateSearchFilter="handleSearchFilterUpdate" />
+        </v-row>
         <v-row class="ga-5">
             <!-- 왼쪽 검색창 -->
-            <v-col>
+            <!-- <v-col>
                 <v-text-field v-model="searchQuery" label="Search Places" @input="filterPlaces"></v-text-field>
                 <v-list>
                     <v-list-item v-for="place in filteredPlaces" :key="place.title" @click="selectPlace(place)">
@@ -17,49 +20,62 @@
                         </div>
                     </v-list-item>
                 </v-list>
-            </v-col>
+            </v-col> -->
+            <div class="list-wrapper" :class="{ 'closed': !isListVisible }">
+                <v-infinite-scroll :height="600" :onLoad="load" @update="updateList">
+                    <template v-for="(place, index) in places" :key="place.id">
+                        <div class="place-item"">
+              <div class=" place-details">
+                            <h3>{{ place.title }}</h3>
+                            <p>{{ place.addr1 }}</p>
+                        </div>
+            </div>
+            <v-divider></v-divider> <!-- 각 값들 간 구분선 추가 -->
+</template>
+</v-infinite-scroll>
+</div>
 
-            <!-- 오른쪽 카카오맵 -->
-            <v-col>
-                <KakaoMap :lat="33.452" :lng="126.573">
-                    <KakaoMapMarkerPolyline :markerList="markerList" :showMarkerOrder="true" strokeColor="#C74C5E"
-                        :strokeOpacity="1" strokeStyle="shortdot" />
-                </KakaoMap>
-            </v-col>
+<!-- 중앙 카카오맵 -->
+<v-col>
+    <KakaoMap :lat="33.452" :lng="126.573">
+        <KakaoMapMarkerPolyline :markerList="markerList" :showMarkerOrder="true" strokeColor="#C74C5E"
+            :strokeOpacity="1" strokeStyle="shortdot" />
+    </KakaoMap>
+</v-col>
 
-            <!-- 선택된 장소 목록 -->
-            <v-col class="d-flex flex-column ga-5">
-                <div>
-                    <draggable v-model="selectedPlace" class="dragArea">
-                        <template #item="{ element: place }">
-                            <v-card class="custom-card" @mouseover="showDeleteButton(place)"
-                                @mouseleave="hideDeleteButton(place)">
-                                <v-card-title>Selected Place</v-card-title>
-                                <v-card-text>
-                                    <div>
-                                        <v-img :src="place.image" width="50" height="50"></v-img>
-                                        <span>{{ place.title }}</span>
-                                    </div>
-                                    <div>{{ place.description }}</div>
-                                    <v-btn icon class="delete-button" @click="deletePlace(place)"
-                                        v-show="place.showDelete">
-                                        <v-icon>mdi-delete</v-icon>
-                                    </v-btn>
-                                </v-card-text>
-                            </v-card>
-                        </template>
-                    </draggable>
-                </div>
-            </v-col>
-        </v-row>
-    </v-container>
+<!-- 선택된 장소 목록 -->
+<v-col class="d-flex flex-column ga-5">
+    <div>
+        <draggable v-model="selectedPlace" class="dragArea">
+            <template #item="{ element: place }">
+                <v-card class="custom-card" @mouseover="showDeleteButton(place)" @mouseleave="hideDeleteButton(place)">
+                    <v-card-title>Selected Place</v-card-title>
+                    <v-card-text>
+                        <div>
+                            <v-img :src="place.image" width="50" height="50"></v-img>
+                            <span>{{ place.title }}</span>
+                        </div>
+                        <div>{{ place.description }}</div>
+                        <v-btn icon class="delete-button" @click="deletePlace(place)" v-show="place.showDelete">
+                            <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                    </v-card-text>
+                </v-card>
+            </template>
+        </draggable>
+    </div>
+</v-col>
+</v-row>
+</v-container>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import CategoryBar from '@/components/map/CategoryBar.vue';
 import axios from 'axios';
 import { KakaoMap, KakaoMapMarkerPolyline, type KakaoMapMarkerListItem } from 'vue3-kakao-maps';
 import draggable from 'vuedraggable';
+import { loadPlaces } from '@/api/place';
 
 const image = {
     imageSrc: 'https://vue3-kakao-maps.netlify.app/images/redMarker.png',
@@ -71,6 +87,9 @@ const searchQuery = ref('');
 const placeList = ref([]);
 const filteredPlaces = ref([]);
 const selectedPlace = ref([]);
+const places = ref([]);
+const loading = ref(true); // 로딩 상태를 나타내는 변수
+const isListVisible = ref(true);
 
 const showDeleteButton = (place) => {
     place.showDelete = true;
@@ -113,22 +132,87 @@ const selectPlace = (place) => {
 const markerList: Ref<KakaoMapMarkerListItem[]> = ref([]);
 
 // Axios를 사용하여 백엔드 API 호출
-const fetchPlaces = async () => {
-    try {
-        const response = await axios.get('http://localhost:8080/place');
-        if (response.status === 200) {
-            placeList.value = response.data;
-            filteredPlaces.value = placeList.value;
-        } else if (response.status === 204) {
-            placeList.value = [];
-            filteredPlaces.value = [];
+// const fetchPlaces = async () => {
+//     try {
+//         const response = await axios.get('http://localhost:8080/place');
+//         if (response.status === 200) {
+//             placeList.value = response.data;
+//             filteredPlaces.value = placeList.value;
+//         } else if (response.status === 204) {
+//             placeList.value = [];
+//             filteredPlaces.value = [];
+//         }
+//     } catch (error) {
+//         console.error('Error fetching places:', error);
+//     }
+// };
+
+const searchFilter = ref({
+    keyword: "",
+    sidoCode: 36,
+    contentTypeId: 14,
+    latitude: 37.501328668708,
+    longitude: 127.03953821497
+});
+
+const getPlaces = () => {
+    console.log("Load Places.......searchFilter:", searchFilter.value);
+    loadPlaces(
+        searchFilter.value,
+        ({ data }) => {
+            console.log("Raw API Response:", data);
+            places.value = data
+            loading.value = false; // 데이터 로드가 완료되면 로딩 상태 변경
+            console.log("Processed Places Data:", places.value);
+
+        },
+        (err) => {
+            console.log("Fail to Load Places........", err);
+            places.value = [];
+            loading.value = false; // 에러 발생 시 로딩 상태 변경
         }
-    } catch (error) {
-        console.error('Error fetching places:', error);
-    }
+    );
 };
 
-fetchPlaces();
+const handleSearchFilterUpdate = (newSearchFilter) => {
+    searchFilter.value = {
+        ...searchFilter.value,
+        ...newSearchFilter
+    };
+    loading.value = true; // 데이터 로드 시작 시 로딩 상태 변경
+    getPlaces();
+};
+
+const items = ref(Array.from({ length: 30 }, (k, v) => v + 1));
+const hasMore = ref(true);
+
+async function api() {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(Array.from({ length: 10 }, (k, v) => v + items.value.at(-1) + 1));
+    }, 1000);
+  });
+}
+async function load({ done }) {
+    // API 호출
+    if (hasMore.value) {
+        const res = await api();
+        if (res.length === 0) {
+            hasMore.value = false;
+        } else {
+            items.value.push(...res);
+        }
+    }
+    done('ok');
+}
+
+const updateList = () => {
+    console.log('List updated!');
+};
+
+getPlaces();
+
+// fetchPlaces();
 
 watch(selectedPlace, updateMarkerList);
 </script>

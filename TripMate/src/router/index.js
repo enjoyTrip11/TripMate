@@ -5,6 +5,7 @@ import PlanListPage from '@/views/plan/PlanListPage.vue'
 import PlanMainPage from '@/views/plan/PlanMainPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import MainPage from '@/views/MainPage.vue';
+import Invite from '@/views/invite/invite.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,6 +55,11 @@ const router = createRouter({
       path: '/',
       name: 'logout',
       component: MainPage
+    },
+    {
+      path: '/invite',
+      name: 'invite',
+      component: Invite
     },
     {
       path: '/',
