@@ -17,7 +17,7 @@
           <!-- 로딩 상태를 나타내는 부분 -->
           <v-progress-linear indeterminate color="primary"></v-progress-linear>
         </div>
-        <div v-else>
+        <div  v-else class="wrapper">
           <MyKakaoMap class="map" :places="places" />
         </div>
       </v-row>
@@ -79,6 +79,10 @@
   }
 
   .map {
+    width: 100%;
+  }
+
+  .wrapper {
     width: 100%;
   }
   </style>

@@ -24,7 +24,7 @@
         <v-btn class="toggle-button" @click="toggleListVisibility">
           {{ isListVisible ? '목록 닫기' : '목록 열기' }}
         </v-btn>
-        <KakaoMap v-if="isMapVisible" :lat="center.lat" :lng="center.lng" :scrollwheel="false" :draggable="true" width="100%" height="600px">
+        <KakaoMap v-if="isMapVisible" :lat="center.lat" :lng="center.lng" :scrollwheel="true" :draggable="true" width="100%" height="600px" @onLoadKakaoMap="onLoadKakaoMap">
           <KakaoMapMarker
             v-for="place in places" 
             :key="place.id" 
@@ -34,11 +34,11 @@
             <div>{{ place.name }}</div>
           </KakaoMapMarker>
         </KakaoMap>
+        <v-btn class="bounds-button" @click="setBounds">지도 범위 재설정</v-btn>
       </div>
     </div>
   </v-container>
 </template>
-
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
@@ -58,31 +58,45 @@ const center = ref({
   lng: 127.03953821497
 });
 
+let map = ref(null);
+const bounds = ref(null);
+const initialBounds = ref(null); // 초기 bounds 저장용 변수
+
 // 목록을 열고 닫는 함수
 const toggleListVisibility = () => {
   isListVisible.value = !isListVisible.value;
 };
 
 // Watch for changes in props.places
-watch(
-  () => props.places,
-  (newPlaces) => {
-    console.log('Received places:', newPlaces);
-    if (newPlaces && newPlaces.length > 0) {
-      center.value = {
-        lat: newPlaces[0].latitude,
-        lng: newPlaces[0].longitude
-      };
-      isMapVisible.value = true;
-    } else {
-      isMapVisible.value = false;
-    }
-  },
-  { immediate: true, deep: true }
-);
-
 onMounted(() => {
   console.log('Props places in MyKakaoMap:', props.places);
+  bounds.value = new kakao.maps.LatLngBounds();
+  initialBounds.value = new kakao.maps.LatLngBounds(); // 초기 bounds 설정
+
+  watch(
+    () => props.places,
+    (newPlaces) => {
+      console.log('Received places:', newPlaces);
+      if (newPlaces && newPlaces.length > 0) {
+        center.value = {
+          lat: newPlaces[0].latitude,
+          lng: newPlaces[0].longitude
+        };
+        isMapVisible.value = true;
+        bounds.value = new kakao.maps.LatLngBounds();
+        newPlaces.forEach(place => {
+          const point = new kakao.maps.LatLng(place.latitude, place.longitude);
+          bounds.value.extend(point);
+          if (initialBounds.value.isEmpty()) { // 초기 bounds가 비어있을 경우에만 추가
+            initialBounds.value.extend(point);
+          }
+        });
+      } else {
+        isMapVisible.value = false;
+      }
+    },
+    { immediate: true, deep: true }
+  );
 });
 
 // Infinite Scroll 관련 로직
@@ -102,12 +116,26 @@ const toggleFavorite = (place) => {
   place.isFavorite = !place.isFavorite;
 };
 
-// 클릭 시 해당 위치로 지도 이동
+// 클릭 시 해당 위치로 지도 이동 및 초기 bounds로 돌아가는 함수
 const moveToMarker = (place) => {
-  center.value = {
-    lat: place.latitude,
-    lng: place.longitude
-  };
+    map.value.setBounds(initialBounds.value);
+    center.value = {
+      lat: place.latitude,
+      lng: place.longitude
+    };
+};
+
+// 지도 로드 시 콜백 함수
+const onLoadKakaoMap = (mapRef) => {
+  map.value = mapRef;
+  console.log('kakao map loaded')
+};
+
+// 지도 범위 재설정 함수
+const setBounds = () => {
+  if (map.value !== null) {
+    map.value.setBounds(bounds.value);
+  }
 };
 
 async function load({ done }) {
@@ -150,30 +178,39 @@ const updateList = () => {
 
 .list-wrapper {
   overflow: hidden;
-  /* width: 100%; */
   padding: 0;
-  display: flex; /* 리스트 내부의 요소들을 가로 정렬하기 위해 추가 */
+  display: flex;
 }
 
 .list-wrapper.closed {
-  /* width: 10px; */
   display: none;
 }
 
 .map-wrapper {
+  flex-grow: 1;
   position: relative;
   height: 600px;
-  width: 1440px;
+  width: 100%;
 }
 
 .toggle-button {
   position: absolute;
   top: 10px;
   left: 10px;
-  align-self: flex-end; /* 목록 오른쪽 끝에 배치 */
   padding: 0;
   margin: 0;
   z-index: 99;
+}
+
+.bounds-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 99;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
 .place-item {
@@ -182,7 +219,7 @@ const updateList = () => {
   align-items: center;
   padding: 10px;
   cursor: pointer;
-  background-color: white; /* 배경색 통일 */
+  background-color: white;
 }
 
 .place-item .place-details {
